@@ -9,11 +9,18 @@ class FolderRepository implements FolderRepositoryI {
   late Folder folder;
   late List<Fse>? fseList;
   @override
-  Stream<FileSystemEntity> getFseListInFolder({required String path}) {
+  Stream<FileSystemEntity> showFolderData({required String path}) {
     // folder = Folder();
     return Directory(path).list();
   }
 
+  String toAbsolute({required String path}) {
+    return Directory(path).absolute.path;
+  }
+
+  // Future<String> resolve({required String path}) {
+  //   return Directory(path).resolveSymbolicLinks();
+  // }
   // sort({required List<Fse> fseList}) {
   //   fseList.sort((a, b) {
   //     if (a.name.startsWith('.') && b.name.startsWith('.')) {
