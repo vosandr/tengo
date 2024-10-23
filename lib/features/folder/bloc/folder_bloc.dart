@@ -28,14 +28,12 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     emit(state.copyWith(
       fseList: () => const [],
       status: () => FolderStatus.loading,
-      path: () => _folderRepository.toAbsolute(
-          path: state.path + event.path),
     ));
     await emit.forEach<FileSystemEntity>(
       _folderRepository.showFolderData(path: state.path),
       onData: (fse) => state.copyWith(
         status: () => FolderStatus.success,
-        path: () => state.path,
+        path: () => state.path+event.path,
         fseList: () => _sort(state.fseList +
             [
               _format(
