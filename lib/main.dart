@@ -31,7 +31,7 @@ class MainApp extends StatelessWidget {
                   BlocProvider(
                     create: (context) =>
                         FolderBloc(folderRepository: FolderRepository())
-                          ..add(ShowFolder()),
+                          ..add(ShowFolder(path: './')),
                   ),
                   BlocProvider(
                     create: (context) => FileBloc(),

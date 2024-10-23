@@ -8,7 +8,7 @@ sealed class FolderEvent extends Equatable {
 }
 
 final class ShowFolder extends FolderEvent {
-  const ShowFolder({this.path = './'});
+  const ShowFolder({this.path = ''});
 
   final String path;
 
@@ -16,8 +16,6 @@ final class ShowFolder extends FolderEvent {
   @override
   List<Object?> get props => [path];
 }
-
-final class GoUp extends FolderEvent {}
 
 final class HideFolder extends FolderEvent {}
 

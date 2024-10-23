@@ -28,7 +28,8 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     emit(state.copyWith(
       fseList: () => const [],
       status: () => FolderStatus.loading,
-      path: () => _folderRepository.toAbsolute(path: event.path),
+      path: () => _folderRepository.toAbsolute(
+          path: state.path + event.path),
     ));
     await emit.forEach<FileSystemEntity>(
       _folderRepository.showFolderData(path: state.path),
@@ -49,7 +50,9 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     );
   }
 
-  // Future<void> _onGoUp(GoUp event, Emitter<FolderState> emit) async {}
+  // Future<void> _onGoUp(GoUp event, Emitter<FolderState> emit) async {
+  //   state.copyWith(path: ()=>_folderRepository.toAbsolute(path: state.path+'../'));
+  // }
 
   _onHideFolder(HideFolder event, Emitter<FolderState> emit) {
     emit(

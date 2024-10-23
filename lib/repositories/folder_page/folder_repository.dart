@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:tengo_simple/repositories/folder_page/folder_repository_interface.dart';
-import 'package:tengo_simple/repositories/folder_page/models/folder.dart';
+// import 'package:tengo_simple/repositories/folder_page/folder_repository_interface.dart';
+// import 'package:tengo_simple/repositories/folder_page/models/folder.dart';
 import 'package:tengo_simple/repositories/fse/models/models.dart';
 
-class FolderRepository implements FolderRepositoryI {
-  FolderRepository({this.fseList});
-  late Folder folder;
-  late List<Fse>? fseList;
+class FolderRepository {
+  FolderRepository();
   @override
   Stream<FileSystemEntity> showFolderData({required String path}) {
     // folder = Folder();
@@ -15,7 +13,15 @@ class FolderRepository implements FolderRepositoryI {
   }
 
   String toAbsolute({required String path}) {
-    return Directory(path).absolute.path;
+    path = Directory(path).absolute.path;
+    if (path.substring(path.length - 3, path.length) == '../') {
+      path = path.substring(0, path.length - 3);
+      path = path.substring(0, path.lastIndexOf('/'));
+      path = path.substring(0, path.lastIndexOf('/')+1);
+    } else if (path.substring(path.length - 2, path.length) == './') {
+      path = path.substring(0, path.length - 2);
+    }
+    return path;
   }
 
   // Future<String> resolve({required String path}) {
