@@ -12,22 +12,22 @@ class FolderContextMenu extends StatelessWidget {
       ContextMenuButtonConfig(
         '',
         onPressed: () {},
-        icon: Icon(Icons.drive_file_rename_outline),
+        icon: const Icon(Icons.drive_file_rename_outline),
       ),
       ContextMenuButtonConfig(
         '',
         onPressed: () {},
-        icon: Icon(Icons.copy),
+        icon: const Icon(Icons.copy),
       ),
       ContextMenuButtonConfig(
         '',
         onPressed: () {},
-        icon: Icon(Icons.cut),
+        icon: const Icon(Icons.cut),
       ),
       ContextMenuButtonConfig(
         '',
         onPressed: () {},
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
       ),
     ]);
   }

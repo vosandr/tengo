@@ -8,13 +8,14 @@ sealed class FileEvent extends Equatable {
 }
 
 final class ShowFile extends FileEvent {
-  const ShowFile({required this.fse});
+  const ShowFile({required this.name, required this.path});
 
-  final Fse fse;
+  final String name;
+  final String path;
   @override
-  List<Object> get props => [fse];
+  List<Object> get props => [name, path];
 }
 
-final class HideFile extends FileEvent {
+final class HideFile extends FileEvent {}
 
-}
+final class WaitRequestFileData extends FileEvent{}

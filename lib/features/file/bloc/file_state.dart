@@ -3,23 +3,29 @@ part of 'file_bloc.dart';
 enum FileStatus { initial, loading, success, failure }
 
 final class FileState extends Equatable {
-  const FileState({this.status = FileStatus.initial, this.name=''});
+  const FileState({this.status = FileStatus.initial, this.name = '', this.path = '', this.content=''});
 
   final FileStatus status;
   final String name;
+  final String path;
+  final String content;
 
   FileState copyWith({
     FileStatus Function()? status,
     String Function()? name,
+    String Function()? path,
+    String Function()? content,
   }) {
     return FileState(
       status: status != null ? status() : this.status,
       name: name != null ? name() : this.name,
+      path: path != null ? path() : this.path,
+      content: content != null ? content() : this.content,
     );
   }
 
   @override
-  List<Object> get props => [status, name];
+  List<Object> get props => [status, name, path, content];
 }
 
 // final class FileViewInitial extends FileViewState {}

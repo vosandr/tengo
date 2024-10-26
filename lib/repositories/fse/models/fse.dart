@@ -1,12 +1,3 @@
-import 'package:tengo_simple/repositories/fse/fse_repository.dart';
-
-enum FseAction {
-  delete,
-  rename,
-  move,
-  copy,
-}
-
 class Fse {
   Fse(
       {required this.name,
@@ -35,11 +26,4 @@ class Fse {
       content: content != null ? content() : this.content,
     );
   }
-
-  // format() {
-  //   name = name.substring(name.lastIndexOf('/'));
-  //   if (type == '_Directory') {
-  //     name += '/';
-  //   }
-  // }
 }

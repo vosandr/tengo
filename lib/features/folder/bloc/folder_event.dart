@@ -31,4 +31,11 @@ final class WatchFolder extends FolderEvent {}
 
 final class ExistsFolder extends FolderEvent {}
 
-final class TapFile extends FolderEvent {}
+
+final class RequestToShowFile extends FolderEvent {
+  const RequestToShowFile({required this.name, required this.path, required this.type});
+
+  final String name;
+  final String path;
+  final String type;
+}

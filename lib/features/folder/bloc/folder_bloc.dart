@@ -4,10 +4,9 @@ import 'dart:io';
 // import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tengo_simple/repositories/folder_page/folder_repository.dart';
-// import 'package:meta/meta.dart';
-// import 'paitories/folder_page/folder_repository.dart';
-import 'package:tengo_simple/repositories/fse/fse_repository.dart';
+import 'package:tengo_viewer_prioritising_files/repositories/fse/folder_repository.dart';
+
+import 'package:tengo_viewer_prioritising_files/repositories/fse/models/fse.dart';
 
 part 'folder_event.dart';
 part 'folder_state.dart';
@@ -16,7 +15,18 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   FolderBloc({required FolderRepository folderRepository})
       : _folderRepository = folderRepository,
         super(const FolderState()) {
-    _setupEventHandlers();
+    on<ShowFolder>((event, emit) async {
+      await _onShowFolder(event, emit);
+    });
+    on<HideFolder>(
+      (event, emit) async {
+        await _onHideFolder(event, emit);
+      },
+    );
+    on<RequestToShowFile>((event, emit) async {
+      await _onRequestToShowFile(event, emit);
+    });
+    // _setupEventHandlers;
   }
 
   final FolderRepository _folderRepository;
@@ -28,26 +38,46 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     emit(state.copyWith(
       fseList: () => const [],
       status: () => FolderStatus.loading,
+      path: () => _folderRepository.toAbsolute(path: state.path + event.path),
     ));
+
     await emit.forEach<FileSystemEntity>(
       _folderRepository.showFolderData(path: state.path),
-      onData: (fse) => state.copyWith(
-        status: () => FolderStatus.success,
-        path: () => state.path+event.path,
-        fseList: () => _sort(state.fseList +
-            [
-              _format(
-                Fse(
-                  name: fse.path,
-                  type: fse.runtimeType.toString(),
-                ),
-              )
-            ]),
-      ),
+      onData: (fse) {
+        // var fseList = _folderRepository.sort(
+        //     state.fseList +
+        //         [
+        //           _folderRepository.format(
+        //             Fse(
+        //                 name: fse.path,
+        //                 type: fse.runtimeType.toString(),
+        //                 path: state.path),
+        //           )
+        //         ],
+        //     _folderRepository.getLinksInFile(
+        //         Fse(name: '00.md', path: state.path, type: '_File')),
+        //     Fse(name: '00.md', path: state.path, type: '_File'));
+        return state.copyWith(
+            status: () => FolderStatus.success,
+            path: () => state.path,
+            fseList: () {
+              return _sort(
+                state.fseList +
+                    [
+                      _format(
+                        Fse(
+                            name: fse.path,
+                            type: fse.runtimeType.toString(),
+                            path: state.path),
+                      )
+                    ],
+              );
+            });
+      },
       onError: (_, __) => state.copyWith(status: () => FolderStatus.failure),
     );
   }
-
+  // Future<void> _on
   // Future<void> _onGoUp(GoUp event, Emitter<FolderState> emit) async {
   //   state.copyWith(path: ()=>_folderRepository.toAbsolute(path: state.path+'../'));
   // }
@@ -83,8 +113,5 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     return fseList;
   }
 
-  void _setupEventHandlers() {
-    on<ShowFolder>(_onShowFolder);
-    on<HideFolder>(_onHideFolder);
-  }
+  _onRequestToShowFile(RequestToShowFile event, Emitter<FolderState> emit) {}
 }
