@@ -15,6 +15,7 @@ dependencies:
   figma_squircle: ^0.5.3
   bloc: ^8.1.4
   context_menus: ^2.0.0+1
+  flutter_build_debian: ^0.0.1
 
 dev_dependencies:
   flutter_test:

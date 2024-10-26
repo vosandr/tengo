@@ -17,9 +17,26 @@ final class ShowFolder extends FolderEvent {
   List<Object?> get props => [path];
 }
 
-final class HideFolder extends FolderEvent {}
+// final class GoToFolder extends FolderEvent {
+//   const GoToFolder({this.path = ''});
 
-final class RefreshFolder extends FolderEvent {}
+//   final String path;
+
+
+//   @override
+//   List<Object?> get props => [path];
+// }
+
+// final class RefreshFolder extends FolderEvent {
+//   const RefreshFolder({this.path = ''});
+
+//   final String path;
+
+
+//   @override
+//   List<Object?> get props => [path];
+// }
+final class HideFolder extends FolderEvent {}
 
 final class CreateFolder extends FolderEvent {}
 

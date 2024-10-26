@@ -18,15 +18,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     on<ShowFolder>((event, emit) async {
       await _onShowFolder(event, emit);
     });
-    on<HideFolder>(
-      (event, emit) async {
-        await _onHideFolder(event, emit);
-      },
-    );
-    on<RequestToShowFile>((event, emit) async {
-      await _onRequestToShowFile(event, emit);
-    });
-    // _setupEventHandlers;
+  
   }
 
   final FolderRepository _folderRepository;
@@ -82,14 +74,6 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   //   state.copyWith(path: ()=>_folderRepository.toAbsolute(path: state.path+'../'));
   // }
 
-  _onHideFolder(HideFolder event, Emitter<FolderState> emit) {
-    emit(
-      state.copyWith(
-        fseList: () => const [],
-        // path: () => _folderRepository.toAbsolute(path: event.path)
-      ),
-    );
-  }
 
   Fse _format(Fse fse) {
     fse.name = fse.name.substring(fse.name.lastIndexOf('/') + 1);
@@ -112,6 +96,4 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     });
     return fseList;
   }
-
-  _onRequestToShowFile(RequestToShowFile event, Emitter<FolderState> emit) {}
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tengo_viewer_prioritising_files/features/file/bloc/file_bloc.dart';
 import 'package:tengo_viewer_prioritising_files/features/folder/bloc/folder_bloc.dart';
 
 // class FolderAppBar extends StatefulWidget {
@@ -12,7 +13,6 @@ import 'package:tengo_viewer_prioritising_files/features/folder/bloc/folder_bloc
 // }
 
 class FolderAppBar extends StatelessWidget {
-
   const FolderAppBar({super.key});
 
   @override
@@ -21,15 +21,13 @@ class FolderAppBar extends StatelessWidget {
       builder: (context, state) {
         return Column(children: [
           AppBar(
-            title: TextField(
-              readOnly: true,
-              controller: TextEditingController()
+            title: TextField(readOnly: true, controller: TextEditingController(text: state.path)
                 // ..value = TextEditingValue(
                 //     composing: TextRange.collapsed(state.path.length),
                 //     text: state.path,
                 //     selection:
                 //         TextSelection.collapsed(offset: state.path.length)),
-            ),
+                ),
           ),
           AppBar(
             // clipBehavior: Clip.antiAlias,
@@ -63,18 +61,23 @@ class FolderAppBar extends StatelessWidget {
                   //   ),
                   // ),
                   Expanded(
+                      child: IconButton(
+                          onPressed: () {
+                            context
+                                .read<FolderBloc>()
+                                .add(ShowFolder(path: ''));
+                          },
+                          icon: Icon(Icons.refresh))),
+                  Expanded(
                     child: IconButton(
                         onPressed: () {
-                          context.read<FolderBloc>().add(HideFolder());
                           context
                               .read<FolderBloc>()
                               .add(const ShowFolder(path: '../'));
                         },
                         icon: const Icon(Icons.grid_3x3)),
                   ),
-                  // Expanded(
-                  //     child: IconButton(
-                  //         onPressed: () {}, icon: Icon(Icons.refresh))),
+                  
                   // Expanded(
                   //     child: IconButton(
                   //         onPressed: () {}, icon: Icon(Icons.settings)))

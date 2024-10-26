@@ -61,7 +61,7 @@ class MainApp extends StatelessWidget {
         textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
                 shape: WidgetStatePropertyAll(SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(cornerRadius: 12))))),
+                    borderRadius: SmoothBorderRadius(cornerRadius: 16))))),
       ),
     );
   }
