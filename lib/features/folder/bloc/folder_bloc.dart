@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 // import 'dart:developer';
 // import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tengo_viewer_prioritising_files/repositories/fse/folder_repository.dart';
+import 'package:tengo_viewer/repositories/fse/folder_repository.dart';
 
-import 'package:tengo_viewer_prioritising_files/repositories/fse/models/fse.dart';
+import 'package:tengo_viewer/repositories/fse/models/fse.dart';
 
 part 'folder_event.dart';
 part 'folder_state.dart';
@@ -18,7 +17,6 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     on<ShowFolder>((event, emit) async {
       await _onShowFolder(event, emit);
     });
-  
   }
 
   final FolderRepository _folderRepository;
@@ -33,9 +31,10 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
       path: () => _folderRepository.toAbsolute(path: state.path + event.path),
     ));
 
-    await emit.forEach<FileSystemEntity>(
-      _folderRepository.showFolderData(path: state.path),
-      onData: (fse) {
+    await emit.forEach<List<Fse>>(
+      _folderRepository.showFolderData(
+          path: state.path, priorityFse: Fse(name: '00.md', path: state.path, type: '_File')),
+      onData: (fseList) {
         // var fseList = _folderRepository.sort(
         //     state.fseList +
         //         [
@@ -52,48 +51,14 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
         return state.copyWith(
             status: () => FolderStatus.success,
             path: () => state.path,
-            fseList: () {
-              return _sort(
-                state.fseList +
-                    [
-                      _format(
-                        Fse(
-                            name: fse.path,
-                            type: fse.runtimeType.toString(),
-                            path: state.path),
-                      )
-                    ],
-              );
-            });
+            fseList: () => state.fseList + fseList);
       },
       onError: (_, __) => state.copyWith(status: () => FolderStatus.failure),
     );
+    // print(state.path + '00.md');
   }
   // Future<void> _on
   // Future<void> _onGoUp(GoUp event, Emitter<FolderState> emit) async {
   //   state.copyWith(path: ()=>_folderRepository.toAbsolute(path: state.path+'../'));
   // }
-
-
-  Fse _format(Fse fse) {
-    fse.name = fse.name.substring(fse.name.lastIndexOf('/') + 1);
-    if (fse.type == '_Directory') {
-      fse.name += '/';
-    }
-    return fse;
-  }
-
-  List<Fse> _sort(List<Fse> fseList) {
-    fseList.sort((a, b) {
-      if (a.name.startsWith('.') && b.name.startsWith('.')) {
-        return a.name.substring(1).compareTo(b.name.toLowerCase().substring(1));
-      } else if (a.name.startsWith('.')) {
-        return a.name.substring(1).compareTo(b.name.toLowerCase());
-      } else if (b.name.startsWith('.')) {
-        return a.name.compareTo(b.name.toLowerCase().substring(1));
-      }
-      return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-    });
-    return fseList;
-  }
 }

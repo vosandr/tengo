@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tengo_viewer_prioritising_files/repositories/fse/file_repository.dart';
+import 'package:tengo_viewer/repositories/fse/file_repository.dart';
 
 part 'file_event.dart';
 part 'file_state.dart';

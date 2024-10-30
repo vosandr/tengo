@@ -1,6 +1,6 @@
 part of 'folder_bloc.dart';
 
-enum FolderStatus { initial, loading, success, failure }
+enum FolderStatus { initial, loading, success, sorted, failure }
 
 final class FolderState extends Equatable {
   const FolderState({

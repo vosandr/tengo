@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/features/file/bloc/file_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo_viewer/features/file/bloc/file_bloc.dart';
+import 'package:tengo_viewer/features/folder/bloc/folder_bloc.dart';
 
 // class FolderAppBar extends StatefulWidget {
 //   const FolderAppBar({
@@ -21,7 +21,9 @@ class FolderAppBar extends StatelessWidget {
       builder: (context, state) {
         return Column(children: [
           AppBar(
-            title: TextField(readOnly: true, controller: TextEditingController(text: state.path)
+            title: TextField(
+                readOnly: true,
+                controller: TextEditingController(text: state.path)
                 // ..value = TextEditingValue(
                 //     composing: TextRange.collapsed(state.path.length),
                 //     text: state.path,
@@ -77,7 +79,7 @@ class FolderAppBar extends StatelessWidget {
                         },
                         icon: const Icon(Icons.grid_3x3)),
                   ),
-                  
+
                   // Expanded(
                   //     child: IconButton(
                   //         onPressed: () {}, icon: Icon(Icons.settings)))

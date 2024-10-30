@@ -1,10 +1,11 @@
 class Fse {
-  Fse(
-      {required this.name,
-      required this.type,
-      this.path = './',
-      this.readedFses,
-      this.content});
+  Fse({
+    required this.name,
+    required this.type,
+    this.path = './',
+    this.readedFses,
+    this.content,
+  });
   String name;
   String type;
   String path;

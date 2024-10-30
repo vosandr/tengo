@@ -2,10 +2,10 @@
 // import 'package:context_menus/context_menus.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/features/file/bloc/file_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/features/folder/bloc/folder_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/repositories/fse/file_repository.dart';
-import 'package:tengo_viewer_prioritising_files/repositories/fse/folder_repository.dart';
+import 'package:tengo_viewer/features/file/bloc/file_bloc.dart';
+import 'package:tengo_viewer/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo_viewer/repositories/fse/file_repository.dart';
+import 'package:tengo_viewer/repositories/fse/folder_repository.dart';
 
 import 'features/pages.dart';
 import 'package:flutter/material.dart';

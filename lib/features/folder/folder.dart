@@ -1,8 +1,8 @@
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/features/file/bloc/file_bloc.dart';
-import 'package:tengo_viewer_prioritising_files/features/folder/widgets/widgets.dart';
+import 'package:tengo_viewer/features/file/bloc/file_bloc.dart';
+import 'package:tengo_viewer/features/folder/widgets/widgets.dart';
 
 import 'bloc/folder_bloc.dart';
 
