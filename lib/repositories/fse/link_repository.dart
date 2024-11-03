@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:tengo_viewer/repositories/fse/folder_repository.dart';
-import 'package:tengo_viewer/repositories/fse/models/fse.dart';
+import 'package:tengo_editor/repositories/fse/folder_repository.dart';
+import 'package:tengo_editor/repositories/fse/models/fse.dart';
 
 class LinkRepository {
   LinkRepository();

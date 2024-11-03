@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_viewer/features/file/bloc/file_bloc.dart';
+import 'package:tengo_editor/features/file/bloc/file_bloc.dart';
 
 class FileContentPage extends StatelessWidget {
   const FileContentPage({super.key});
@@ -16,13 +16,15 @@ class FileContentPage extends StatelessWidget {
                 children: [
                   AppBar(
                     title: TextField(
-                        readOnly: true,
+                      onSubmitted:(value) {
+                        
+                      },
                         controller: TextEditingController(text: state.name)),
                   )
                 ],
               )),
           body: TextField(
-            readOnly: true,
+
             // readOnly: 'hasFile' != false ? false : true,
             controller: TextEditingController(text: state.content),
             onChanged: (string) {},

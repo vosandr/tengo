@@ -3,9 +3,9 @@ import 'dart:async';
 // import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tengo_viewer/repositories/fse/folder_repository.dart';
+import 'package:tengo_editor/repositories/fse/folder_repository.dart';
 
-import 'package:tengo_viewer/repositories/fse/models/fse.dart';
+import 'package:tengo_editor/repositories/fse/models/fse.dart';
 
 part 'folder_event.dart';
 part 'folder_state.dart';
@@ -33,7 +33,8 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
     await emit.forEach<List<Fse>>(
       _folderRepository.showFolderData(
-          path: state.path, priorityFse: Fse(name: '00.md', path: state.path, type: '_File')),
+          path: state.path,
+          priorityFse: Fse(name: '00.md', path: state.path, type: '_File')),
       onData: (fseList) {
         // var fseList = _folderRepository.sort(
         //     state.fseList +

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:tengo_viewer/repositories/fse/models/fse.dart';
+import 'package:tengo_editor/repositories/fse/models/fse.dart';
 import 'link_repository.dart';
 
 class FolderRepository {

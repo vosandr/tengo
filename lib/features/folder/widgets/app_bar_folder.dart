@@ -1,7 +1,8 @@
+import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_viewer/features/file/bloc/file_bloc.dart';
-import 'package:tengo_viewer/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo_editor/features/file/bloc/file_bloc.dart';
+import 'package:tengo_editor/features/folder/bloc/folder_bloc.dart';
 
 // class FolderAppBar extends StatefulWidget {
 //   const FolderAppBar({
@@ -12,9 +13,16 @@ import 'package:tengo_viewer/features/folder/bloc/folder_bloc.dart';
 //   State<FolderAppBar> createState() => _FolderAppBarState();
 // }
 
-class FolderAppBar extends StatelessWidget {
+class FolderAppBar extends StatefulWidget {
   const FolderAppBar({super.key});
 
+  @override
+  State<FolderAppBar> createState() => _FolderAppBarState();
+}
+
+class _FolderAppBarState extends State<FolderAppBar> {
+  final TextEditingController _textEditingController = TextEditingController();
+  final MenuController _menuController = MenuController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FolderBloc, FolderState>(
@@ -22,8 +30,8 @@ class FolderAppBar extends StatelessWidget {
         return Column(children: [
           AppBar(
             title: TextField(
-                readOnly: true,
-                controller: TextEditingController(text: state.path)
+                onSubmitted: (value) {},
+                controller: _textEditingController..text = state.path
                 // ..value = TextEditingValue(
                 //     composing: TextRange.collapsed(state.path.length),
                 //     text: state.path,
@@ -47,15 +55,42 @@ class FolderAppBar extends StatelessWidget {
                   //     child: IconButton(
                   //         onPressed: () {},
                   //         icon: Icon(Icons.curtains_closed_outlined))),
-                  // Expanded(
-                  //   child: IconButton(
-                  //       onPressed: () {
-                  //         context
-                  //             .read<FolderBloc>()
-                  //             .add(CreateFolder());
-                  //       },
-                  //       icon: Icon(Icons.add)),
-                  // ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTapDown: (TapDownDetails details) {
+                        if (_menuController.isOpen) {
+                          _menuController.close();
+                          return;
+                        }
+                        _menuController.open(position: details.localPosition);
+                      },
+                      child: MenuAnchor(
+                        style: MenuStyle(shape: WidgetStatePropertyAll(SmoothRectangleBorder(
+                    borderRadius: SmoothBorderRadius(cornerRadius: 6)))),
+                        controller: _menuController,
+                        menuChildren: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 4),
+                              width: 100,
+                              child: TextField(
+                                style: TextStyle(),
+                                decoration: InputDecoration(
+                                  isCollapsed: true,
+                                  // isDense: true,
+                                ),
+                              ))
+                        ],
+                        child: IconButton(
+                          // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
+                          onPressed: () {
+                            // context.read<FolderBloc>().add(CreateFolder());
+                          },
+
+                          icon: Icon(Icons.add),
+                        ),
+                      ),
+                    ),
+                  ),
                   // Expanded(
                   //   child: IconButton(
                   //     onPressed: () {},
@@ -80,9 +115,9 @@ class FolderAppBar extends StatelessWidget {
                         icon: const Icon(Icons.grid_3x3)),
                   ),
 
-                  // Expanded(
-                  //     child: IconButton(
-                  //         onPressed: () {}, icon: Icon(Icons.settings)))
+                  Expanded(
+                      child: IconButton(
+                          onPressed: () {}, icon: Icon(Icons.settings)))
                 ]),
           )
         ]);
