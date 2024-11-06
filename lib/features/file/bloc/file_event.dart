@@ -16,6 +16,29 @@ final class ShowFile extends FileEvent {
   List<Object> get props => [name, path];
 }
 
-final class HideFile extends FileEvent {}
+final class RenameFile extends FileEvent {
+  const RenameFile({
+    required this.name,
+    required this.newName,
+    required this.path,
+  });
+  final String name;
+  final String newName;
+  final String path;
+  @override
+  List<Object> get props => [name, newName, path];
+}
 
-final class WaitRequestFileData extends FileEvent{}
+final class WriteFile extends FileEvent {
+  const WriteFile({
+    required this.name,
+    required this.content,
+    required this.path,
+  });
+
+  final String name;
+  final String content;
+  final String path;
+  @override
+  List<Object> get props => [name, path, content];
+}

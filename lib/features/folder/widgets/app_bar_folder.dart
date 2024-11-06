@@ -1,8 +1,21 @@
+import 'dart:convert';
+
+// import 'package:desktop_multi_window/desktop_multi_window.dart';
+// import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_editor/features/file/bloc/file_bloc.dart';
-import 'package:tengo_editor/features/folder/bloc/folder_bloc.dart';
+// import 'package:tengo/another_windows/cubit/settings_cubit.dart';
+import 'package:tengo/another_windows/settings.dart';
+import 'package:tengo/another_windows/settings_model.dart';
+// import 'package:tengo/another_windows/models/window_args.dart';
+import 'package:tengo/features/file/bloc/file_bloc.dart';
+import 'package:tengo/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo/main.dart';
+import 'package:tengo/features/models/fse_action.dart';
+import 'package:tengo/widgets/context_menu.dart';
+import 'package:tengo/widgets/hider.dart';
+// import 'package:window_manager_plus/window_manager_plus.dart';
 
 // class FolderAppBar extends StatefulWidget {
 //   const FolderAppBar({
@@ -30,6 +43,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
         return Column(children: [
           AppBar(
             title: TextField(
+                readOnly: !(SettingsModel().editingMode),
                 onSubmitted: (value) {},
                 controller: _textEditingController..text = state.path
                 // ..value = TextEditingValue(
@@ -55,41 +69,85 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   //     child: IconButton(
                   //         onPressed: () {},
                   //         icon: Icon(Icons.curtains_closed_outlined))),
-                  Expanded(
-                    child: GestureDetector(
-                      onTapDown: (TapDownDetails details) {
-                        if (_menuController.isOpen) {
-                          _menuController.close();
-                          return;
-                        }
-                        _menuController.open(position: details.localPosition);
-                      },
-                      child: MenuAnchor(
-                        style: MenuStyle(shape: WidgetStatePropertyAll(SmoothRectangleBorder(
-                    borderRadius: SmoothBorderRadius(cornerRadius: 6)))),
-                        controller: _menuController,
-                        menuChildren: [
-                          Container(
+                  Hider(
+                    showWidget: Expanded(
+                        child: ContextMenu(
+                      menuMode: ContextMenuMode.primaryKey,
+                      menuChildren: [
+                        Container(
                             padding: EdgeInsets.symmetric(horizontal: 4),
-                              width: 100,
-                              child: TextField(
-                                style: TextStyle(),
-                                decoration: InputDecoration(
-                                  isCollapsed: true,
-                                  // isDense: true,
-                                ),
-                              ))
-                        ],
+                            width: 100,
+                            child: TextField(
+                              onSubmitted: (text) {
+                                context.read<FolderBloc>().add(
+                                    OnePathActionHappened(
+                                        action: OnePathAction.create,
+                                        path: text));
+                              },
+                              style: TextStyle(),
+                              decoration: InputDecoration(
+                                isCollapsed: true,
+                                // isDense: true,
+                              ),
+                            ))
+                      ],
+                      child: Container(
                         child: IconButton(
                           // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
                           onPressed: () {
-                            // context.read<FolderBloc>().add(CreateFolder());
+                            // Not Using
                           },
 
                           icon: Icon(Icons.add),
                         ),
                       ),
-                    ),
+                    )
+
+                        /* GestureDetector(
+                        onTapDown: (TapDownDetails details) {
+                          if (_menuController.isOpen) {
+                            _menuController.close();
+                            return;
+                          }
+                          _menuController.open(position: details.localPosition);
+                        },
+                        child: MenuAnchor(
+                          style: MenuStyle(
+                              shape: WidgetStatePropertyAll(SmoothRectangleBorder(
+                                  borderRadius:
+                                      SmoothBorderRadius(cornerRadius: 6)))),
+                          controller: _menuController,
+                          menuChildren: [
+                            Container(
+                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                width: 100,
+                                child: TextField(
+                                  onSubmitted: (text) {
+                                    context.read<FolderBloc>().add(
+                                        OnePathActionHappened(
+                                            action: OnePathAction.create,
+                                            path: text));
+                                  },
+                                  style: TextStyle(),
+                                  decoration: InputDecoration(
+                                    isCollapsed: true,
+                                    // isDense: true,
+                                  ),
+                                ))
+                          ],
+                          child: 
+                          IconButton(
+                            // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
+                            onPressed: () {
+                              // Not Using
+                            },
+                    
+                            icon: Icon(Icons.add),
+                          ),
+                        ),
+                      ), */
+                        ),
+                    hideWidget: SizedBox.shrink(),
                   ),
                   // Expanded(
                   //   child: IconButton(
@@ -117,7 +175,11 @@ class _FolderAppBarState extends State<FolderAppBar> {
 
                   Expanded(
                       child: IconButton(
-                          onPressed: () {}, icon: Icon(Icons.settings)))
+                          onPressed: () async {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const Settings()));
+                          },
+                          icon: Icon(Icons.settings))),
                 ]),
           )
         ]);

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_editor/features/file/bloc/file_bloc.dart';
-import 'package:tengo_editor/features/folder/widgets/widgets.dart';
+// import 'package:tengo/another_windows/cubit/settings_cubit.dart';
+import 'package:tengo/another_windows/settings_model.dart';
+import 'package:tengo/features/file/bloc/file_bloc.dart';
+import 'package:tengo/features/folder/widgets/widgets.dart';
 
 import 'bloc/folder_bloc.dart';
 
@@ -32,26 +34,27 @@ class _FolderWidgetState extends State<FolderWidget> {
                 var fse = state.fseList[index];
 
                 return FolderContextMenu(
-                  fse: fse,
-                  // menuController: _menuController,
+                  disabled: !(SettingsModel().editingMode),
+                    fse: fse,
+                    // menuController: _menuController,
                     child: TextButton(
-                  onPressed: () {
-                    if (fse.type == '_Directory') {
-                      // context
-                      //     .read<FolderViewBloc>()
-                      //     .add(FolderViewClearRequested());
-                      context
-                          .read<FolderBloc>()
-                          .add(ShowFolder(path: fse.name));
-                    } else if (fse.type == '_File') {
-                      context
-                          .read<FileBloc>()
-                          .add(ShowFile(name: fse.name, path: fse.path));
-                    }
-                  },
-                  style: const ButtonStyle(),
-                  child: Text(fse.name.toString()),
-                ));
+                      onPressed: () {
+                        if (fse.type == '_Directory') {
+                          // context
+                          //     .read<FolderViewBloc>()
+                          //     .add(FolderViewClearRequested());
+                          context
+                              .read<FolderBloc>()
+                              .add(ShowFolder(path: fse.name));
+                        } else if (fse.type == '_File') {
+                          context
+                              .read<FileBloc>()
+                              .add(ShowFile(name: fse.name, path: fse.path));
+                        }
+                      },
+                      style: const ButtonStyle(),
+                      child: Text(fse.name.toString()),
+                    ));
                 // );
               },
               itemCount: state.fseList.length,

@@ -1,79 +1,62 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide SubmenuButton, MenuController, MenuAnchor, MenuItemButton;
+import 'package:flutter/material.dart'
+    hide SubmenuButton, MenuController, MenuAnchor, MenuItemButton;
 import 'package:flutter/services.dart';
-import 'package:tengo_editor/open_source/menu_anchor.dart';
-import 'package:tengo_editor/repositories/fse/models/fse.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tengo/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo/main.dart';
+import 'package:tengo/open_source/menu_anchor.dart';
+import 'package:tengo/features/models/fse.dart';
+import 'package:tengo/features/models/fse_action.dart';
+import 'package:tengo/widgets/context_menu.dart';
 
-
-class FolderContextMenu extends StatefulWidget {
-  const FolderContextMenu({super.key, required this.child, required this.fse});
+class FolderContextMenu extends StatelessWidget {
+  const FolderContextMenu({super.key,  required this.child, required this.fse, this.disabled});
   final Widget child;
   final Fse fse;
-  @override
-  State<FolderContextMenu> createState() => _FolderContextMenuState();
-}
-
-class _FolderContextMenuState extends State<FolderContextMenu> {
-  final MenuController _menuController = MenuController();
-  final FocusNode _buttonFocusNode = FocusNode(debugLabel: 'Menu Button');
+  final bool? disabled;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      
-        onSecondaryTapDown: _handleSecondaryTapDown,
-        onTapDown: _handleTapDown,
-        child: MenuAnchor(
-          
-          // alignmentOffset: Offset(100, 100),
-          childFocusNode: _buttonFocusNode,
-          controller: _menuController,
+    return ContextMenu(
+      disabled: disabled,
+      menuChildren: [
+        SubmenuButton(
+          child: Icon(Icons.add),
           menuChildren: [
-            SubmenuButton(
-              
-              child: Icon(Icons.add),
-              menuChildren: [SizedBox(width: 100, child: TextField(onEditingComplete: () {},))],
-            ),
-            SubmenuButton(
-              
-              child:  Icon(Icons.drive_file_rename_outline),
-              menuChildren: [SizedBox(width: 100, child: TextField(onEditingComplete: () {},))],
-            ),
-            MenuItemButton(onPressed: () {}, child: Icon(Icons.remove),),
-            // MenuItemButton(onPressed: () {}, child: Icon(Icons.copy)),
-            // MenuItemButton(onPressed: () {}, child: Icon(Icons.cut)),
-            // MenuItemButton(onPressed: () {}, child: Icon(Icons.paste)),
+            SizedBox(
+                width: 100,
+                child: TextField(
+                  onSubmitted: (text) {
+                    context.read<FolderBloc>().add(OnePathActionHappened(
+                        action: OnePathAction.create, path: text));
+                  },
+                ))
           ],
-          child: widget.child,
-        ));
-  }
-
-  void _handleSecondaryTapDown(TapDownDetails details) {
-    _menuController.open(position: details.localPosition);
-  }
-
-  void _handleTapDown(TapDownDetails details) {
-    if (_menuController.isOpen) {
-      _menuController.close();
-      return;
-    }
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-        // Don't open the menu on these platforms with a Ctrl-tap (or a
-        // tap).
-        break;
-      case TargetPlatform.iOS:
-      case TargetPlatform.macOS:
-        // Only open the menu on these platforms if the control button is down
-        // when the tap occurs.
-        if (HardwareKeyboard.instance.logicalKeysPressed
-                .contains(LogicalKeyboardKey.controlLeft) ||
-            HardwareKeyboard.instance.logicalKeysPressed
-                .contains(LogicalKeyboardKey.controlRight)) {
-          _menuController.open(position: details.localPosition);
-        }
-    }
+        ),
+        // SubmenuButton(
+        //   child: Icon(Icons.drive_file_rename_outline),
+        //   menuChildren: [
+        //     SizedBox(
+        //         width: 100,
+        //         child: TextField(
+        //           onSubmitted: (text) {
+        //             // context.read<FolderBloc>().add(ActionHappened(action: FseAction.rename, path: widget.fse.name, newPath: text));
+        //           },
+        //         ))
+        //   ],
+        // ),
+        MenuItemButton(
+          onPressed: () {
+            context.read<FolderBloc>().add(OnePathActionHappened(
+                action: OnePathAction.delete, path: fse.name));
+          },
+          child: Icon(Icons.remove),
+        ),
+        // MenuItemButton(onPressed: () {}, child: Icon(Icons.copy)),
+        // MenuItemButton(onPressed: () {}, child: Icon(Icons.cut)),
+        // MenuItemButton(onPressed: () {}, child: Icon(Icons.paste)),
+      ],
+      child: child,
+    );
   }
 }

@@ -1,6 +1,6 @@
 {
-    "name": "tengo_simple",
-    "short_name": "tengo_simple",
+    "name": "tengo",
+    "short_name": "tengo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

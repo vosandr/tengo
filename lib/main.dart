@@ -1,11 +1,15 @@
 // import 'dart:io';
 // import 'package:context_menus/context_menus.dart';
+// import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tengo_editor/features/file/bloc/file_bloc.dart';
-import 'package:tengo_editor/features/folder/bloc/folder_bloc.dart';
-import 'package:tengo_editor/repositories/fse/file_repository.dart';
-import 'package:tengo_editor/repositories/fse/folder_repository.dart';
+// import 'package:tengo/another_windows/cubit/settings_cubit.dart';
+import 'package:tengo/another_windows/settings.dart';
+import 'package:tengo/features/file/bloc/file_bloc.dart';
+import 'package:tengo/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo/features/file/repositories/file_repository.dart';
+import 'package:tengo/features/folder/repositories/folder_repository.dart';
+// import 'package:window_manager_plus/window_manager_plus.dart';
 
 import 'features/pages.dart';
 import 'package:flutter/material.dart';
@@ -68,12 +72,9 @@ class MainApp extends StatelessWidget {
             style: MenuStyle(
                 shape: WidgetStatePropertyAll(SmoothRectangleBorder(
                     borderRadius: SmoothBorderRadius(cornerRadius: 14))))),
-
         popupMenuTheme: PopupMenuThemeData(
             shape: SmoothRectangleBorder(
-                borderRadius: SmoothBorderRadius(cornerRadius: 14))),
-        
-      ),
+                borderRadius: SmoothBorderRadius(cornerRadius: 14)))),
     );
   }
 }

@@ -3,9 +3,10 @@ import 'dart:async';
 // import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tengo_editor/repositories/fse/folder_repository.dart';
+import 'package:tengo/features/folder/repositories/folder_repository.dart';
+import 'package:tengo/features/models/fse_action.dart';
 
-import 'package:tengo_editor/repositories/fse/models/fse.dart';
+import 'package:tengo/features/models/fse.dart';
 
 part 'folder_event.dart';
 part 'folder_state.dart';
@@ -16,6 +17,9 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
         super(const FolderState()) {
     on<ShowFolder>((event, emit) async {
       await _onShowFolder(event, emit);
+    });
+    on<OnePathActionHappened>((event, emit) async {
+      await _onActionHappened(event, emit);
     });
   }
 
@@ -58,8 +62,14 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     );
     // print(state.path + '00.md');
   }
+
   // Future<void> _on
   // Future<void> _onGoUp(GoUp event, Emitter<FolderState> emit) async {
   //   state.copyWith(path: ()=>_folderRepository.toAbsolute(path: state.path+'../'));
   // }
+  Future<void> _onActionHappened(
+      OnePathActionHappened event, Emitter<FolderState> emit) async {
+    _folderRepository.onePathAction(action: event.action, path: event.path);
+    ShowFolder(path: event.path);
+  }
 }

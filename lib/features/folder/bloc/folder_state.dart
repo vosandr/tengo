@@ -28,3 +28,17 @@ final class FolderState extends Equatable {
   @override
   List<Object?> get props => [status, path, fseList];
 }
+
+class PasteState{
+  const PasteState({this.currentPath, this.newPath});
+
+  final String? currentPath;
+  final String? newPath;
+}
+// class ActionState extends Equatable {
+//   const ActionState({});
+
+//   @override
+//   // TODO: implement props
+//   List<Object?> get props =>  [];
+// }

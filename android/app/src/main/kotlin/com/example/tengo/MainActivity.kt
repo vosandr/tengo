@@ -1,4 +1,4 @@
-package com.example.tengo_simple
+package com.example.tengo
 
 import io.flutter.embedding.android.FlutterActivity
 

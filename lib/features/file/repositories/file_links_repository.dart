@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:tengo_editor/repositories/fse/folder_repository.dart';
-import 'package:tengo_editor/repositories/fse/models/fse.dart';
+import 'package:tengo/features/folder/repositories/folder_repository.dart';
+import 'package:tengo/features/models/fse.dart';
 
-class LinkRepository {
-  LinkRepository();
+class FileLinksRepository {
+  FileLinksRepository();
 
   List<Fse> showPriorityFseList(
       {required Fse priorityFse, required RegExp pattern}) {

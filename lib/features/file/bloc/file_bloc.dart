@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tengo_editor/repositories/fse/file_repository.dart';
+import 'package:tengo/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo/features/file/repositories/file_repository.dart';
 
 part 'file_event.dart';
 part 'file_state.dart';
@@ -16,6 +17,12 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     // });
     on<ShowFile>((event, emit) async {
       await _onShowFile(event, emit);
+    });
+    on<RenameFile>((event, emit) async {
+      await _onRenameFile(event, emit);
+    });
+    on<WriteFile>((event, emit) async {
+      await _onChangeFile(event, emit);
     });
     // _setupEventHandlers();
   }
@@ -53,6 +60,19 @@ class FileBloc extends Bloc<FileEvent, FileState> {
               },
             ),
         onError: (_, __) => state.copyWith(status: () => FileStatus.failure));
+  }
+
+  _onRenameFile(RenameFile event, Emitter<FileState> emit) {
+    _fileRepository.rename(
+        path: event.path, name: event.name, newName: event.newName);
+    ShowFile(name: event.newName, path: event.path);
+    ShowFolder(path: event.path);
+  }
+
+  _onChangeFile(WriteFile event, Emitter<FileState> emit) {
+    _fileRepository.write(
+        name: event.name, content: event.content, path: event.path);
+    ShowFile(name: event.name, path: event.path);
   }
 
   // void _setupEventHandlers() {

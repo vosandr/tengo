@@ -1,4 +1,4 @@
-name: tengo_editor
+name: tengo
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -15,6 +15,9 @@ dependencies:
   figma_squircle: ^0.5.3
   bloc: ^8.1.4
   flutter_build_debian: ^0.0.1
+  # desktop_multi_window: ^0.2.0
+  # window_manager_plus: 
+  # bitsdojo_window: ^0.1.6
 
 dev_dependencies:
   flutter_test:
