@@ -9,5 +9,5 @@ https://github.com/vosandr/tengo/blob/main/BUGS.md
 Список релизов находится тут:  
 https://github.com/vosandr/tengo/releases
 
-Материально поддержать можно тут:
+Материально поддержать можно тут:  
 https://boosty.to/vosirandr
