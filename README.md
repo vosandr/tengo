@@ -16,3 +16,5 @@ https://github.com/vosandr/tengo/releases
 
 Материально поддержать можно тут:  
 https://boosty.to/vosirandr
+
+Для связи со мной пишите сюда: vosirandr@gmail.com
