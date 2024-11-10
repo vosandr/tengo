@@ -15,61 +15,76 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   FolderBloc({required FolderRepository folderRepository})
       : _folderRepository = folderRepository,
         super(const FolderState()) {
-    on<ShowFolder>((event, emit) async {
-      await _onShowFolder(event, emit);
+    // on<ShowFolder>((event, emit) async {
+    //   await _onShowFolder(event, emit);
+    // });
+    on<PrimaryActionHappened>((event, emit) async {
+      await _onPrimaryActionHappened(event, emit);
     });
-    on<OnePathActionHappened>((event, emit) async {
-      await _onActionHappened(event, emit);
+    on<SecondaryActionHappened>((event, emit) async {
+      await _onSecondaryActionHappened(event, emit);
     });
   }
 
   final FolderRepository _folderRepository;
 
-  Future<void> _onShowFolder(
-    ShowFolder event,
-    Emitter<FolderState> emit,
-  ) async {
+  // Future<void> _onShowFolder(
+  //   ShowFolder event,
+  //   Emitter<FolderState> emit,
+  // ) async {
+  //   _clearData(emit, event);
+  //   await _loadData(emit);
+  // }
+
+  Future<void> _onPrimaryActionHappened(
+      PrimaryActionHappened event, Emitter<FolderState> emit) async {
+    emit(state.copyWith(
+      fseList: () => const [],
+      status: () => FolderStatus.loading,
+    ));
+    await _folderRepository.primaryAction(
+        action: event.action, path: event.path);
+    // await _clearData(SecondaryActionHappened(action: Prima, path: path), emit)
+    await _readData(emit);
+    // ShowFolder(path: event.path);
+  }
+
+  _onSecondaryActionHappened(
+      SecondaryActionHappened event, Emitter<FolderState> emit) {
+    _folderRepository.secondaryAction(
+      action: event.action,
+      path: event.path,
+      secondaryPath: event.secondaryPath,
+    );
+  }
+
+  void _clearData(SecondaryActionHappened event, Emitter<FolderState> emit) {
     emit(state.copyWith(
       fseList: () => const [],
       status: () => FolderStatus.loading,
       path: () => _folderRepository.toAbsolute(path: state.path + event.path),
     ));
+  }
 
+  Future<void> _readData(Emitter<FolderState> emit) async {
     await emit.forEach<List<Fse>>(
       _folderRepository.showFolderData(
           path: state.path,
-          priorityFse: Fse(name: '00.md', path: state.path, type: '_File')),
+          priorityFse: Fse(
+            name: '00.md',
+            path: state.path,
+            type: '_File',
+          )),
       onData: (fseList) {
-        // var fseList = _folderRepository.sort(
-        //     state.fseList +
-        //         [
-        //           _folderRepository.format(
-        //             Fse(
-        //                 name: fse.path,
-        //                 type: fse.runtimeType.toString(),
-        //                 path: state.path),
-        //           )
-        //         ],
-        //     _folderRepository.getLinksInFile(
-        //         Fse(name: '00.md', path: state.path, type: '_File')),
-        //     Fse(name: '00.md', path: state.path, type: '_File'));
         return state.copyWith(
-            status: () => FolderStatus.success,
-            path: () => state.path,
-            fseList: () => state.fseList + fseList);
+          status: () => FolderStatus.success,
+          path: () => state.path,
+          fseList: () => state.fseList + fseList,
+        );
       },
-      onError: (_, __) => state.copyWith(status: () => FolderStatus.failure),
+      onError: (_, __) => state.copyWith(
+        status: () => FolderStatus.failure,
+      ),
     );
-    // print(state.path + '00.md');
-  }
-
-  // Future<void> _on
-  // Future<void> _onGoUp(GoUp event, Emitter<FolderState> emit) async {
-  //   state.copyWith(path: ()=>_folderRepository.toAbsolute(path: state.path+'../'));
-  // }
-  Future<void> _onActionHappened(
-      OnePathActionHappened event, Emitter<FolderState> emit) async {
-    _folderRepository.onePathAction(action: event.action, path: event.path);
-    ShowFolder(path: event.path);
   }
 }

@@ -1,12 +1,11 @@
-enum  OnePathAction {
+enum  PrimaryAction {
   create,
   delete,
-  // copy,
-  // move,
 }
 
-enum TwoPathAction {
-  rename, 
-  copy,
-  move,
+enum SecondaryAction {
+  read,
+  // rename, 
+  // copy,
+  // move,
 }

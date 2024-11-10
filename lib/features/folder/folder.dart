@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tengo/another_windows/settings_model.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/folder/widgets/widgets.dart';
+import 'package:tengo/features/models/fse_action.dart';
 
 import 'bloc/folder_bloc.dart';
 
@@ -34,7 +35,7 @@ class _FolderWidgetState extends State<FolderWidget> {
                 var fse = state.fseList[index];
 
                 return FolderContextMenu(
-                  disabled: !(SettingsModel().editingMode),
+                  // disabled: !(SettingsModel().editingMode),
                     fse: fse,
                     // menuController: _menuController,
                     child: TextButton(
@@ -45,7 +46,7 @@ class _FolderWidgetState extends State<FolderWidget> {
                           //     .add(FolderViewClearRequested());
                           context
                               .read<FolderBloc>()
-                              .add(ShowFolder(path: fse.name));
+                              .add(SecondaryActionHappened(action: SecondaryAction.read,path: fse.name, secondaryPath: '00.md'));
                         } else if (fse.type == '_File') {
                           context
                               .read<FileBloc>()

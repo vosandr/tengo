@@ -34,7 +34,7 @@ class FolderAppBar extends StatefulWidget {
 }
 
 class _FolderAppBarState extends State<FolderAppBar> {
-  final TextEditingController _textEditingController = TextEditingController();
+  // final TextEditingController _textEditingController = TextEditingController();
   final MenuController _menuController = MenuController();
   @override
   Widget build(BuildContext context) {
@@ -43,9 +43,9 @@ class _FolderAppBarState extends State<FolderAppBar> {
         return Column(children: [
           AppBar(
             title: TextField(
-                readOnly: !(SettingsModel().editingMode),
+                // readOnly: !(SettingsModel().editingMode),
                 onSubmitted: (value) {},
-                controller: _textEditingController..text = state.path
+                controller: TextEditingController(text: state.path)
                 // ..value = TextEditingValue(
                 //     composing: TextRange.collapsed(state.path.length),
                 //     text: state.path,
@@ -72,6 +72,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   Hider(
                     showWidget: Expanded(
                         child: ContextMenu(
+                      disabled: false,
                       menuMode: ContextMenuMode.primaryKey,
                       menuChildren: [
                         Container(
@@ -80,9 +81,12 @@ class _FolderAppBarState extends State<FolderAppBar> {
                             child: TextField(
                               onSubmitted: (text) {
                                 context.read<FolderBloc>().add(
-                                    OnePathActionHappened(
-                                        action: OnePathAction.create,
-                                        path: text));
+                                    PrimaryActionHappened(
+                                        action: PrimaryAction.create,
+                                        path: state.path+text));
+                                // context
+                                //     .read<FolderBloc>()
+                                //     .add(ShowFolder(path: state.path));
                               },
                               style: TextStyle(),
                               decoration: InputDecoration(
@@ -160,7 +164,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
                           onPressed: () {
                             context
                                 .read<FolderBloc>()
-                                .add(ShowFolder(path: ''));
+                                .add(SecondaryActionHappened(action: SecondaryAction.read, path: '', secondaryPath: '00.md'));
                           },
                           icon: Icon(Icons.refresh))),
                   Expanded(
@@ -168,7 +172,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
                         onPressed: () {
                           context
                               .read<FolderBloc>()
-                              .add(const ShowFolder(path: '../'));
+                              .add(const SecondaryActionHappened(action: SecondaryAction.read, path: '../', secondaryPath: '00.md'));
                         },
                         icon: const Icon(Icons.grid_3x3)),
                   ),

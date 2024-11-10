@@ -76,43 +76,55 @@ class FolderRepository {
     return path!;
   }
 
-  String getTypeFromString({required String path}) {
-    if (path.lastIndexOf('/') == path.length) {
+  String getStringType({required String path}) {
+    // print('${path.lastIndexOf('/') == path.length} ${path.lastIndexOf('/')} ${path.length}');
+    if (path.lastIndexOf('/') + 1 == path.length) {
       return '_Directory';
     } else if (path.lastIndexOf('/') != path.length) {
       return '_File';
+    } else if (Link(path).existsSync()) {
+      return '_Link';
     }
     throw 'Not the type from getTypeFromString';
   }
 
-  onePathAction(
-      {required OnePathAction action, required String path, String? newPath}) {
-    var type = getTypeFromString(path: path);
+  Future<FileSystemEntity> primaryAction(
+      {required PrimaryAction action, required String path}) {
+    var type = getStringType(path: path);
     // print(type);
     switch (action) {
-      case OnePathAction.delete:
-        getFseType(type: type, path: path).delete();
-      case OnePathAction.create:
-        create(type: type, path: path);
-      // case Action.copy:
-      //   copySync(type: type, path: path, newPath: checkNewPath(newPath));
-      // case Action.move:
-      //   moveSync();
+      case PrimaryAction.delete:
+        return getFseType(type: type, path: path).delete();
+      case PrimaryAction.create:
+        return create(type: type, path: path);
     }
   }
 
-  create({required String type, required String path}) {
+  secondaryAction(
+      {required SecondaryAction action,
+      required String path,
+      required String secondaryPath}) {
+    var type = getStringType(path: path);
+    var secondaryType = getStringType(path: secondaryPath);
+    switch (action) {
+      case SecondaryAction.read:
+        return showFolderData(
+            path: path, priorityFse: Fse(name: secondaryPath, type: secondaryType, path: path));
+    }
+  }
+
+  Future<FileSystemEntity> create(
+      {required String type, required String path}) {
     if (type == '_Directory') {
-      Directory(path).create();
+      return Directory(path).create();
     } else if (type == '_File') {
-      File(path).create();
+      return File(path).create();
     }
     // else if(type == '_Link') {
     //   Link(path).createSync(target)
     // }
-    else {
-      throw 'Not the type from createSync';
-    }
+
+    throw 'Not the type from createSync';
   }
 
   // copySync({required String type, required String path, required newPath}) {

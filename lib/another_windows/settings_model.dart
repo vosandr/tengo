@@ -1,6 +1,8 @@
-class SettingsModel {
-  SettingsModel({this.editingMode = false});
+import 'package:shared_preferences/shared_preferences.dart';
 
-  bool editingMode;
-  void changeEditingMode() => editingMode = !editingMode;
+class SettingsModel {
+  // final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  _setSettings() async {
+
+  }
 }

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
 import 'package:tengo/features/file/repositories/file_repository.dart';
+import 'package:tengo/features/models/fse_action.dart';
 
 part 'file_event.dart';
 part 'file_state.dart';
@@ -66,7 +67,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     _fileRepository.rename(
         path: event.path, name: event.name, newName: event.newName);
     ShowFile(name: event.newName, path: event.path);
-    ShowFolder(path: event.path);
+    SecondaryActionHappened(action: SecondaryAction.read,path: event.path, secondaryPath: '00.md');
   }
 
   _onChangeFile(WriteFile event, Emitter<FileState> emit) {

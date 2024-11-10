@@ -8,12 +8,12 @@ class Hider extends StatelessWidget {
   Hider({required this.showWidget, required this.hideWidget, super.key});
   final Widget showWidget;
   final Widget hideWidget;
-  final bool editingMode = SettingsModel().editingMode;
+  // final bool editingMode = SettingsModel().editingMode;
   @override
   Widget build(BuildContext context) {
-    if (editingMode == true) {
+    // if (editingMode == true) {
       return showWidget;
-    }
+    // }
     return hideWidget;
   }
 

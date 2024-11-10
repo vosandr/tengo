@@ -7,22 +7,30 @@ sealed class FolderEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class ShowFolder extends FolderEvent {
-  const ShowFolder({this.path = ''});
+// final class ShowFolder extends FolderEvent {
+//   const ShowFolder({this.path = ''});
 
-  final String path;
+//   final String path;
 
-  @override
-  List<Object?> get props => [path];
-}
+//   @override
+//   List<Object?> get props => [path];
+// }
 
-final class OnePathActionHappened extends FolderEvent {
-  const OnePathActionHappened({
+final class PrimaryActionHappened extends FolderEvent {
+  const PrimaryActionHappened({
     required this.action,
     required this.path,
   });
-  final OnePathAction action;
+  final PrimaryAction action;
   final String path;
+}
+
+final class SecondaryActionHappened extends FolderEvent {
+  const SecondaryActionHappened({required this.action, required this.path, required this.secondaryPath});
+
+  final SecondaryAction action;
+  final String path;
+  final String secondaryPath;
 }
 // final class GoToFolder extends FolderEvent {
 //   const GoToFolder({this.path = ''});
@@ -41,14 +49,3 @@ final class OnePathActionHappened extends FolderEvent {
 //   @override
 //   List<Object?> get props => [path];
 // }
-final class HideFolder extends FolderEvent {}
-
-final class CreateFse extends FolderEvent {}
-
-final class RenameFse extends FolderEvent {}
-
-final class DeleteFse extends FolderEvent {}
-
-final class WatchFolder extends FolderEvent {}
-
-final class ExistsFolder extends FolderEvent {}

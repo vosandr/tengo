@@ -1,3 +1,4 @@
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
@@ -18,7 +19,7 @@ class FileContentPage extends StatelessWidget {
                 children: [
                   AppBar(
                     title: TextField(
-                        readOnly: !(SettingsModel().editingMode),
+                        // readOnly: !(SettingsModel().editingMode),
                         onSubmitted: (newName) {
                           context.read<FileBloc>().add(
                                 RenameFile(
@@ -33,7 +34,7 @@ class FileContentPage extends StatelessWidget {
                 ],
               )),
           body: TextField(
-            readOnly: !(SettingsModel().editingMode),
+            // readOnly: !(SettingsModel().editingMode),
             controller: TextEditingController(text: state.content),
             onChanged: (content) {
               context.read<FileBloc>().add(WriteFile(
@@ -48,3 +49,41 @@ class FileContentPage extends StatelessWidget {
     );
   }
 }
+
+// class FruitColorizer extends TextEditingController {
+//   final HighlightConfiguration configuration;
+//   final Pattern pattern;
+
+//   FruitColorizer(this.mapping)
+//       : pattern =
+//             RegExp(mapping.keys.map((key) => RegExp.escape(key)).join('|'));
+
+//   FruitColorizer.fromColors(Map<String, Color> colorMap)
+//       : this(colorMap
+//             .map((text, color) => MapEntry(text, TextStyle(color: color))));
+
+//   @override
+//   TextSpan buildTextSpan(
+//       {required BuildContext context,
+//       TextStyle? style,
+//       required bool withComposing}) {
+//     List<InlineSpan> children = [];
+
+//     text.splitMapJoin(
+//       pattern,
+//       onMatch: (Match match) {
+//         children.add(
+//             TextSpan(text: match[0], style: style?.merge(mapping[match[0]])));
+//         return match[0] ?? '';
+//       },
+//       onNonMatch: (String text) {
+//         children.add(TextSpan(text: text, style: style));
+//         return text;
+//       },
+//     );
+//     return TextSpan(style: style, children: children);
+//   }
+// }
+
+// class HighlightConfiguration {
+// }
