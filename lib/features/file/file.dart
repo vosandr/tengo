@@ -1,13 +1,24 @@
+import 'package:cardoteka/cardoteka.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
-import 'package:tengo/another_windows/settings_model.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 
-class FileContentPage extends StatelessWidget {
+class FileContentPage extends StatefulWidget {
   const FileContentPage({super.key});
 
+  @override
+  State<FileContentPage> createState() => _FileContentPageState();
+}
+
+class _FileContentPageState extends State<FileContentPage> {
+  final settings = SettingsCardoteka(
+      config: CardotekaConfig(
+          name: 'settings',
+          cards: SettingsCards.values,
+          converters: SettingsCards.converters));
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FileBloc, FileState>(
@@ -19,7 +30,7 @@ class FileContentPage extends StatelessWidget {
                 children: [
                   AppBar(
                     title: TextField(
-                        // readOnly: !(SettingsModel().editingMode),
+                        readOnly: !(settings.get(SettingsCards.isEditMode)),
                         onSubmitted: (newName) {
                           context.read<FileBloc>().add(
                                 RenameFile(
@@ -34,7 +45,7 @@ class FileContentPage extends StatelessWidget {
                 ],
               )),
           body: TextField(
-            // readOnly: !(SettingsModel().editingMode),
+            readOnly: !(settings.get(SettingsCards.isEditMode)),
             controller: TextEditingController(text: state.content),
             onChanged: (content) {
               context.read<FileBloc>().add(WriteFile(

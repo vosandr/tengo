@@ -1,17 +1,29 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cardoteka/cardoteka.dart';
 import 'package:tengo/features/models/fse_action.dart';
 import 'package:tengo/features/models/fse.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 import '../../file/repositories/file_links_repository.dart';
 
 class FolderRepository {
   FolderRepository();
-  Stream<List<Fse>> showFolderData(
-      {required String path, required Fse priorityFse}) async* {
+  final settings = SettingsCardoteka(
+      config: CardotekaConfig(
+          name: 'settings',
+          cards: SettingsCards.values,
+          converters: SettingsCards.converters));
+  Stream<List<Fse>> showFolderData({required String path}) async* {
     // folder = Folder();
     List<Fse> linkedFseList = FileLinksRepository().showPriorityFseList(
-        priorityFse: priorityFse, pattern: RegExp(r'\[\[.*?\]\]'));
+        priorityFse: Fse(
+            name: settings.get(SettingsCards.priorityFseName),
+            type: getStringType(
+              path: settings.get(SettingsCards.priorityFseName),
+            ),
+            path: path),
+        pattern: RegExp(r'\[\[.*?\]\]'));
     List<Fse> sortedFseList = [];
 
     var dataList = Directory(path).listSync();
@@ -82,17 +94,20 @@ class FolderRepository {
       return '_Directory';
     } else if (path.lastIndexOf('/') != path.length) {
       return '_File';
-    } else if (Link(path).existsSync()) {
-      return '_Link';
     }
+    // else if (Link(path).existsSync()) {
+    //   return '_Link';
+    // }
     throw 'Not the type from getTypeFromString';
   }
 
-  Future<FileSystemEntity> primaryAction(
+  primaryAction(
       {required PrimaryAction action, required String path}) {
     var type = getStringType(path: path);
     // print(type);
     switch (action) {
+      case PrimaryAction.read:
+        return showFolderData(path: path);
       case PrimaryAction.delete:
         return getFseType(type: type, path: path).delete();
       case PrimaryAction.create:
@@ -100,18 +115,18 @@ class FolderRepository {
     }
   }
 
-  secondaryAction(
-      {required SecondaryAction action,
-      required String path,
-      required String secondaryPath}) {
-    var type = getStringType(path: path);
-    var secondaryType = getStringType(path: secondaryPath);
-    switch (action) {
-      case SecondaryAction.read:
-        return showFolderData(
-            path: path, priorityFse: Fse(name: secondaryPath, type: secondaryType, path: path));
-    }
-  }
+  // secondaryAction(
+  //     {required SecondaryAction action,
+  //     required String path,
+  //     required String secondaryPath}) {
+  //   // var type = getStringType(path: path);
+  //   // var secondaryType = getStringType(path: secondaryPath);
+  //   switch (action) {
+  //     case SecondaryAction.read:
+  //       return showFolderData(
+  //           path: path,);
+  //   }
+  // }
 
   Future<FileSystemEntity> create(
       {required String type, required String path}) {

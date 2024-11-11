@@ -1,7 +1,9 @@
+import 'package:cardoteka/cardoteka.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tengo/features/models/fse.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
-import 'package:tengo/another_windows/settings_model.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/folder/widgets/widgets.dart';
 import 'package:tengo/features/models/fse_action.dart';
@@ -16,7 +18,12 @@ class FolderWidget extends StatefulWidget {
 }
 
 class _FolderWidgetState extends State<FolderWidget> {
-  final MenuController _menuController = MenuController();
+  bool enabledTextField = false;
+  final settings = SettingsCardoteka(
+      config: CardotekaConfig(
+          name: 'settings',
+          cards: SettingsCards.values,
+          converters: SettingsCards.converters));
   @override
   Widget build(BuildContext context) {
     // bool isScreenWide = MediaQuery.sizeOf(context).width >= kmi;
@@ -32,33 +39,63 @@ class _FolderWidgetState extends State<FolderWidget> {
           } else {
             return ListView.builder(
               itemBuilder: (context, index) {
-                var fse = state.fseList[index];
-
-                return FolderContextMenu(
-                  // disabled: !(SettingsModel().editingMode),
-                    fse: fse,
-                    // menuController: _menuController,
-                    child: TextButton(
-                      onPressed: () {
-                        if (fse.type == '_Directory') {
-                          // context
-                          //     .read<FolderViewBloc>()
-                          //     .add(FolderViewClearRequested());
-                          context
-                              .read<FolderBloc>()
-                              .add(SecondaryActionHappened(action: SecondaryAction.read,path: fse.name, secondaryPath: '00.md'));
-                        } else if (fse.type == '_File') {
-                          context
-                              .read<FileBloc>()
-                              .add(ShowFile(name: fse.name, path: fse.path));
-                        }
-                      },
-                      style: const ButtonStyle(),
-                      child: Text(fse.name.toString()),
-                    ));
-                // );
+                Widget item;
+                int fseIndex = index;
+                if (state.textFieldEnabled == true && index == 0) {
+                  item = TextField(
+                    onTapOutside: (pointer) {
+                      context.read<FolderBloc>().add(BooleanVarChanged(
+                          booleanVar: BooleanVar.textFieldEnabled,
+                          value: false));
+                    },
+                    onSubmitted: (value) {
+                      context.read<FolderBloc>().add(BooleanVarChanged(
+                          booleanVar: BooleanVar.textFieldEnabled,
+                          value: false));
+                      context.read<FolderBloc>().add(
+                            PrimaryActionHappened(
+                              action: PrimaryAction.create,
+                              path: state.path + value,
+                            ),
+                          );
+                    },
+                    autofocus: true,
+                  );
+                  fseIndex = index - 1;
+                } else {
+                  Fse fse = state.fseList[fseIndex];
+                  item = FolderContextMenu(
+                      disabled: !(settings.get(SettingsCards.isEditMode)),
+                      fse: fse,
+                      // menuController: _menuController,
+                      child: TextButton(
+                        onPressed: () {
+                          if (fse.type == '_Directory') {
+                            // context
+                            //     .read<FolderViewBloc>()
+                            //     .add(FolderViewClearRequested());
+                            context
+                                .read<FolderBloc>()
+                                .add(PrimaryActionHappened(
+                                  action: PrimaryAction.read,
+                                  path: fse.name,
+                                ));
+                          } else if (fse.type == '_File') {
+                            context
+                                .read<FileBloc>()
+                                .add(ShowFile(name: fse.name, path: fse.path));
+                          }
+                        },
+                        style: const ButtonStyle(),
+                        child: Text(fse.name.toString()),
+                      ));
+                  // );
+                }
+                return item;
               },
-              itemCount: state.fseList.length,
+              itemCount: enabledTextField
+                  ? state.fseList.length + 1
+                  : state.fseList.length,
             );
           }
         }));

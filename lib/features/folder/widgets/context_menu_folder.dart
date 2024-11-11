@@ -23,22 +23,14 @@ class FolderContextMenu extends StatelessWidget {
         return ContextMenu(
           disabled: disabled,
           menuChildren: [
-            SubmenuButton(
-              child: Icon(Icons.add),
-              menuChildren: [
-                SizedBox(
-                    width: 100,
-                    child: TextField(
-                      onSubmitted: (text) {
-                        context.read<FolderBloc>().add(PrimaryActionHappened(
-                            action: PrimaryAction.create, path: state.path+text));
-                        // context
-                        //     .read<FolderBloc>()
-                        //     .add(ShowFolder(path: state.path));
-                      },
-                    ))
-              ],
-            ),
+            IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  context.read<FolderBloc>().add(BooleanVarChanged(
+                      booleanVar: BooleanVar.textFieldEnabled, value: true));
+                  // context.read<FolderBloc>().add(PrimaryActionHappened(
+                  //     action: PrimaryAction.create, path: state.path+text));
+                }),
             // SubmenuButton(
             //   child: Icon(Icons.drive_file_rename_outline),
             //   menuChildren: [
@@ -51,13 +43,13 @@ class FolderContextMenu extends StatelessWidget {
             //         ))
             //   ],
             // ),
-            MenuItemButton(
+            IconButton(
               onPressed: () {
                 context.read<FolderBloc>().add(PrimaryActionHappened(
-                    action: PrimaryAction.delete, path: state.path+fse.name));
+                    action: PrimaryAction.delete, path: state.path + fse.name));
                 // context.read<FolderBloc>().add(ShowFolder(path: state.path));
               },
-              child: Icon(Icons.remove),
+              icon: Icon(Icons.remove),
             ),
             // MenuItemButton(onPressed: () {}, child: Icon(Icons.copy)),
             // MenuItemButton(onPressed: () {}, child: Icon(Icons.cut)),

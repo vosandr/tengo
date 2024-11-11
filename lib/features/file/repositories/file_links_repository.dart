@@ -12,6 +12,7 @@ class FileLinksRepository {
 
     File file = File(priorityFse.path + priorityFse.name);
     if (!file.existsSync()) {
+      print('file not exists');
       return fsePriorityList;
     }
     String fileContent = file.readAsStringSync();
@@ -22,22 +23,29 @@ class FileLinksRepository {
       if (!(path.contains('../'))) {
         String priority;
         if (path.contains('/')) {
+          
           priority = path.substring(0, path.indexOf('/'));
           var priorityDir = Directory(priority);
-          fsePriorityList.add(
+          if(priorityDir.existsSync()){
+            fsePriorityList.add(
             FolderRepository().format(Fse(
                 name: priorityDir.path,
                 type: priorityDir.runtimeType.toString(),
                 path: priorityFse.path)),
           );
+          }
+          
         } else if (!(path.contains('/'))) {
           priority = path;
           var priorityFile = File(priority);
-          fsePriorityList.add(FolderRepository().format(Fse(
+          if(priorityFile.existsSync()){
+            fsePriorityList.add(FolderRepository().format(Fse(
             name: priorityFile.path,
             type: priorityFile.runtimeType.toString(),
             path: priorityFse.path,
           )));
+          }
+          
         }
       }
     }

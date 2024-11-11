@@ -1,11 +1,12 @@
 enum  PrimaryAction {
+  read,
   create,
   delete,
 }
 
-enum SecondaryAction {
-  read,
-  // rename, 
-  // copy,
-  // move,
-}
+// enum SecondaryAction {
+  
+//   // rename, 
+//   // copy,
+//   // move,
+// }

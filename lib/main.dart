@@ -1,11 +1,12 @@
 // import 'dart:io';
 // import 'package:context_menus/context_menus.dart';
 // import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:cardoteka/cardoteka.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
-import 'package:tengo/another_windows/settings.dart';
+import 'package:tengo/features/settings/settings.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
 import 'package:tengo/features/file/repositories/file_repository.dart';
@@ -18,21 +19,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_resizable_container/flutter_resizable_container.dart';
 
 void main() async {
-  await getSharedPrefs();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Cardoteka.init();
+
   runApp(const MainApp());
-}
-
-Future<void> getSharedPrefs() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  if(!(prefs.containsKey('editingMode'))){
-      await prefs.setBool('editingMode', false);
-  }
-  if(!(prefs.containsKey('priorityFse'))){
-      await prefs.setString('priorityFse', '00.md');
-  }
-  // print(await prefs.get('editingMode'));
-
-  // await prefs.setString('priorityFse', '00.md');
 }
 
 class MainApp extends StatelessWidget {
@@ -50,10 +40,10 @@ class MainApp extends StatelessWidget {
                 create: (context) =>
                     FolderBloc(folderRepository: FolderRepository())
                       ..add(
-                        const SecondaryActionHappened(
-                            action: SecondaryAction.read,
-                            path: './',
-                            secondaryPath: '00.md'),
+                        const PrimaryActionHappened(
+                          action: PrimaryAction.read,
+                          path: './',
+                        ),
                       ),
               ),
               BlocProvider(

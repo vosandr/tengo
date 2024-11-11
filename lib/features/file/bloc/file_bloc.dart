@@ -67,7 +67,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
     _fileRepository.rename(
         path: event.path, name: event.name, newName: event.newName);
     ShowFile(name: event.newName, path: event.path);
-    SecondaryActionHappened(action: SecondaryAction.read,path: event.path, secondaryPath: '00.md');
+    PrimaryActionHappened(action: PrimaryAction.read,path: event.path);
   }
 
   _onChangeFile(WriteFile event, Emitter<FileState> emit) {

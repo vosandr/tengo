@@ -25,13 +25,25 @@ final class PrimaryActionHappened extends FolderEvent {
   final String path;
 }
 
-final class SecondaryActionHappened extends FolderEvent {
-  const SecondaryActionHappened({required this.action, required this.path, required this.secondaryPath});
-
-  final SecondaryAction action;
-  final String path;
-  final String secondaryPath;
+enum BooleanVar {
+  textFieldEnabled,
 }
+
+final class BooleanVarChanged extends FolderEvent {
+  const BooleanVarChanged({
+    required this.booleanVar,
+    required this.value,
+  });
+  final BooleanVar booleanVar;
+  final bool value;
+}
+// final class SecondaryActionHappened extends FolderEvent {
+//   const SecondaryActionHappened({required this.action, required this.path, required this.secondaryPath});
+
+//   final SecondaryAction action;
+//   final String path;
+//   final String secondaryPath;
+// }
 // final class GoToFolder extends FolderEvent {
 //   const GoToFolder({this.path = ''});
 

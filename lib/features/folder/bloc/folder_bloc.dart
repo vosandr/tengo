@@ -21,8 +21,11 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     on<PrimaryActionHappened>((event, emit) async {
       await _onPrimaryActionHappened(event, emit);
     });
-    on<SecondaryActionHappened>((event, emit) async {
-      await _onSecondaryActionHappened(event, emit);
+    // on<SecondaryActionHappened>((event, emit) async {
+    //   await _onSecondaryActionHappened(event, emit);
+    // });
+    on<BooleanVarChanged>((event, emit) async {
+      await _onBooleanVarChanged(event, emit);
     });
   }
 
@@ -38,10 +41,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   Future<void> _onPrimaryActionHappened(
       PrimaryActionHappened event, Emitter<FolderState> emit) async {
-    emit(state.copyWith(
-      fseList: () => const [],
-      status: () => FolderStatus.loading,
-    ));
+    _clearData(event, emit);
     await _folderRepository.primaryAction(
         action: event.action, path: event.path);
     // await _clearData(SecondaryActionHappened(action: Prima, path: path), emit)
@@ -49,16 +49,23 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     // ShowFolder(path: event.path);
   }
 
-  _onSecondaryActionHappened(
-      SecondaryActionHappened event, Emitter<FolderState> emit) {
-    _folderRepository.secondaryAction(
-      action: event.action,
-      path: event.path,
-      secondaryPath: event.secondaryPath,
-    );
+  // _onSecondaryActionHappened(
+  //     SecondaryActionHappened event, Emitter<FolderState> emit) {
+  //   _folderRepository.secondaryAction(
+  //     action: event.action,
+  //     path: event.path,
+  //     secondaryPath: event.secondaryPath,
+  //   );
+  // }
+
+  _onBooleanVarChanged(BooleanVarChanged event, Emitter<FolderState> emit) {
+    switch (event.booleanVar) {
+      case BooleanVar.textFieldEnabled:
+        emit(state.copyWith(textFieldEnabled: () => event.value));
+    }
   }
 
-  void _clearData(SecondaryActionHappened event, Emitter<FolderState> emit) {
+  void _clearData(PrimaryActionHappened event, Emitter<FolderState> emit) {
     emit(state.copyWith(
       fseList: () => const [],
       status: () => FolderStatus.loading,
@@ -68,13 +75,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   Future<void> _readData(Emitter<FolderState> emit) async {
     await emit.forEach<List<Fse>>(
-      _folderRepository.showFolderData(
-          path: state.path,
-          priorityFse: Fse(
-            name: '00.md',
-            path: state.path,
-            type: '_File',
-          )),
+      _folderRepository.showFolderData(path: state.path),
       onData: (fseList) {
         return state.copyWith(
           status: () => FolderStatus.success,

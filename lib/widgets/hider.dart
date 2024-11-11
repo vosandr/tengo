@@ -1,19 +1,25 @@
+import 'package:cardoteka/cardoteka.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
-import 'package:tengo/another_windows/settings_model.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 import 'package:tengo/main.dart';
 
 class Hider extends StatelessWidget {
   Hider({required this.showWidget, required this.hideWidget, super.key});
   final Widget showWidget;
   final Widget hideWidget;
-  // final bool editingMode = SettingsModel().editingMode;
+  final editingMode = SettingsCardoteka(
+    config: CardotekaConfig(
+        name: 'settings',
+        cards: SettingsCards.values,
+        converters: SettingsCards.converters),
+  ).get(SettingsCards.isEditMode);
   @override
   Widget build(BuildContext context) {
-    // if (editingMode == true) {
+    if (editingMode == true) {
       return showWidget;
-    // }
+    }
     return hideWidget;
   }
 

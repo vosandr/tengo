@@ -2,12 +2,13 @@ import 'dart:convert';
 
 // import 'package:desktop_multi_window/desktop_multi_window.dart';
 // import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:cardoteka/cardoteka.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
-import 'package:tengo/another_windows/settings.dart';
-import 'package:tengo/another_windows/settings_model.dart';
+import 'package:tengo/features/settings/settings.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 // import 'package:tengo/another_windows/models/window_args.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
@@ -34,24 +35,40 @@ class FolderAppBar extends StatefulWidget {
 }
 
 class _FolderAppBarState extends State<FolderAppBar> {
-  // final TextEditingController _textEditingController = TextEditingController();
-  final MenuController _menuController = MenuController();
+  final TextEditingController _textEditingController = TextEditingController();
+  // final FocusNode _focusNode = FocusNode();
+  // String path = '';
+  // @override
+  // void didUpdateWidget(covariant FolderAppBar oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FolderBloc, FolderState>(
+    return BlocConsumer<FolderBloc, FolderState>(
+      listener: (context, state) {},
       builder: (context, state) {
+        // path = state.path;
         return Column(children: [
           AppBar(
             title: TextField(
-                // readOnly: !(SettingsModel().editingMode),
-                onSubmitted: (value) {},
-                controller: TextEditingController(text: state.path)
-                // ..value = TextEditingValue(
-                //     composing: TextRange.collapsed(state.path.length),
-                //     text: state.path,
-                //     selection:
-                //         TextSelection.collapsed(offset: state.path.length)),
-                ),
+              onSubmitted: (value) {
+                context.read<FolderBloc>().add(BooleanVarChanged(
+                    booleanVar: BooleanVar.textFieldEnabled, value: true));
+              },
+              controller: _textEditingController
+                ..value = TextEditingValue(
+                    text: state.path,
+                    selection:
+                        TextSelection.collapsed(offset: state.path.length)),
+              // autofocus: true,
+              // ..value = TextEditingValue(
+              //     composing: TextRange.collapsed(state.path.length),
+              //     text: state.path,
+              //     selection:
+              //         TextSelection.collapsed(offset: state.path.length)),
+            ),
           ),
           AppBar(
             // clipBehavior: Clip.antiAlias,
@@ -62,7 +79,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
             // title: TextFormField(
             //     initialValue: 'There is a weird folder name here'),
             leading: Row(
-
+                mainAxisAlignment: MainAxisAlignment.center,
                 // direction: Axis.horizontal,
                 children: [
                   // Expanded(
@@ -70,87 +87,12 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   //         onPressed: () {},
                   //         icon: Icon(Icons.curtains_closed_outlined))),
                   Hider(
-                    showWidget: Expanded(
-                        child: ContextMenu(
-                      disabled: false,
-                      menuMode: ContextMenuMode.primaryKey,
-                      menuChildren: [
-                        Container(
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            width: 100,
-                            child: TextField(
-                              onSubmitted: (text) {
-                                context.read<FolderBloc>().add(
-                                    PrimaryActionHappened(
-                                        action: PrimaryAction.create,
-                                        path: state.path+text));
-                                // context
-                                //     .read<FolderBloc>()
-                                //     .add(ShowFolder(path: state.path));
-                              },
-                              style: TextStyle(),
-                              decoration: InputDecoration(
-                                isCollapsed: true,
-                                // isDense: true,
-                              ),
-                            ))
-                      ],
-                      child: Container(
-                        child: IconButton(
-                          // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
-                          onPressed: () {
-                            // Not Using
-                          },
+                    showWidget: IconButton(
+                      // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
+                      onPressed: () {},
 
-                          icon: Icon(Icons.add),
-                        ),
-                      ),
-                    )
-
-                        /* GestureDetector(
-                        onTapDown: (TapDownDetails details) {
-                          if (_menuController.isOpen) {
-                            _menuController.close();
-                            return;
-                          }
-                          _menuController.open(position: details.localPosition);
-                        },
-                        child: MenuAnchor(
-                          style: MenuStyle(
-                              shape: WidgetStatePropertyAll(SmoothRectangleBorder(
-                                  borderRadius:
-                                      SmoothBorderRadius(cornerRadius: 6)))),
-                          controller: _menuController,
-                          menuChildren: [
-                            Container(
-                                padding: EdgeInsets.symmetric(horizontal: 4),
-                                width: 100,
-                                child: TextField(
-                                  onSubmitted: (text) {
-                                    context.read<FolderBloc>().add(
-                                        OnePathActionHappened(
-                                            action: OnePathAction.create,
-                                            path: text));
-                                  },
-                                  style: TextStyle(),
-                                  decoration: InputDecoration(
-                                    isCollapsed: true,
-                                    // isDense: true,
-                                  ),
-                                ))
-                          ],
-                          child: 
-                          IconButton(
-                            // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
-                            onPressed: () {
-                              // Not Using
-                            },
-                    
-                            icon: Icon(Icons.add),
-                          ),
-                        ),
-                      ), */
-                        ),
+                      icon: Icon(Icons.add),
+                    ),
                     hideWidget: SizedBox.shrink(),
                   ),
                   // Expanded(
@@ -159,31 +101,26 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   //     icon: Icon(Icons.push_pin),
                   //   ),
                   // ),
-                  Expanded(
-                      child: IconButton(
-                          onPressed: () {
-                            context
-                                .read<FolderBloc>()
-                                .add(SecondaryActionHappened(action: SecondaryAction.read, path: '', secondaryPath: '00.md'));
-                          },
-                          icon: Icon(Icons.refresh))),
-                  Expanded(
-                    child: IconButton(
-                        onPressed: () {
-                          context
-                              .read<FolderBloc>()
-                              .add(const SecondaryActionHappened(action: SecondaryAction.read, path: '../', secondaryPath: '00.md'));
-                        },
-                        icon: const Icon(Icons.grid_3x3)),
-                  ),
+                  IconButton(
+                      onPressed: () {
+                        context.read<FolderBloc>().add(PrimaryActionHappened(
+                            action: PrimaryAction.read, path: ''));
+                      },
+                      icon: Icon(Icons.refresh)),
+                  IconButton(
+                      onPressed: () {
+                        context.read<FolderBloc>().add(
+                            const PrimaryActionHappened(
+                                action: PrimaryAction.read, path: '../'));
+                      },
+                      icon: const Icon(Icons.grid_3x3)),
 
-                  Expanded(
-                      child: IconButton(
-                          onPressed: () async {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const Settings()));
-                          },
-                          icon: Icon(Icons.settings))),
+                  IconButton(
+                      onPressed: () async {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const Settings()));
+                      },
+                      icon: Icon(Icons.settings)),
                 ]),
           )
         ]);
