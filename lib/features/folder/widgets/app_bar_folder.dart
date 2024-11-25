@@ -35,9 +35,10 @@ class FolderAppBar extends StatefulWidget {
 }
 
 class _FolderAppBarState extends State<FolderAppBar> {
-  final TextEditingController _pathEditingController = TextEditingController();
+  late final TextEditingController _pathTextController;
   final TextEditingController _createEditingController =
       TextEditingController();
+  late final ScrollController _pathScrollController;
   // final FocusNode _focusNode = FocusNode();
   // String path = '';
   // @override
@@ -50,6 +51,35 @@ class _FolderAppBarState extends State<FolderAppBar> {
   //   super.initState();
   //   _textEditingController.addListener(() {_textEditingController.});
   // }
+  @override
+  void initState() {
+    super.initState();
+    _pathTextController = TextEditingController()
+      ..addListener(() {
+        _scrollToEnd();
+      });
+    _pathScrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _pathTextController.dispose();
+    _pathScrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToEnd() {
+    Future.delayed(Duration.zero, () {
+      if (_pathScrollController.hasClients &&
+          _pathScrollController.position.maxScrollExtent !=
+              _pathScrollController.offset) {
+        _pathScrollController.animateTo(
+            _pathScrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 10),
+            curve: Curves.linear);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +90,10 @@ class _FolderAppBarState extends State<FolderAppBar> {
         return Column(children: [
           AppBar(
             title: TextField(
+              scrollController: _pathScrollController,
+              
               // onSubmitted: (value) {},
-              controller: _pathEditingController..text = state.path,
+              controller: _pathTextController..text = state.path,
             ),
           ),
           Hider(
@@ -81,7 +113,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
                     // mainAxisAlignment: MainAxisAlignment.center,
                     // children: [
                     const Icon(Icons.add),
-            
+
                 title: Padding(
                   padding: const EdgeInsets.only(right: 15),
                   child: TextField(
@@ -140,8 +172,9 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   // ),
                   IconButton(
                       onPressed: () {
-                        context.read<FolderBloc>().add(const PrimaryActionHappened(
-                            action: PrimaryAction.read, path: ''));
+                        context.read<FolderBloc>().add(
+                            const PrimaryActionHappened(
+                                action: PrimaryAction.read, path: ''));
                       },
                       icon: const Icon(Icons.refresh)),
 

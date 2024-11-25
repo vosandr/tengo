@@ -1,6 +1,6 @@
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:tengo/features/file/highlight/md/link_text.dart';
+import 'package:tengo/features/file/highlight/md/link_text/link_text.dart';
 
 class HighlightSpanBuilder extends SpecialTextSpanBuilder {
   HighlightSpanBuilder({required this.context, required this.selection, required this.path});

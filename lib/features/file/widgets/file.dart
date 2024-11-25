@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tengo/features/file/highlight/highlight_span_builder.dart';
 import 'package:tengo/features/file/repositories/highlighter.dart';
-import 'package:tengo/features/file/repositories/links_repository.dart';
+import 'package:tengo/features/file/highlight/md/link_text/links_repository.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';

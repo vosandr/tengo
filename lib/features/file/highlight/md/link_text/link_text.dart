@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
+import 'package:tengo/features/file/highlight/md/link_text/links_repository.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
 import 'package:tengo/features/models/fse_action.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
@@ -29,7 +30,7 @@ class LinkText extends SpecialText {
       // required this.selection,
       })
       : super(LinkPattern.flag.value, LinkPattern.endFlag.value, style);
-        final settings = SettingsCardoteka(
+  final settings = SettingsCardoteka(
       config: CardotekaConfig(
           name: 'settings',
           cards: SettingsCards.values,
@@ -43,9 +44,11 @@ class LinkText extends SpecialText {
   // final TextSelection selection;
   String _getStringType({required String path}) {
     // print('${path.lastIndexOf(Platform.pathSeparator) == path.length} ${path.lastIndexOf(Platform.pathSeparator)} ${path.length}');
-    if (path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1 == path.length) {
+    if (path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1 ==
+        path.length) {
       return '_Directory';
-    } else if (path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) != path.length) {
+    } else if (path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) !=
+        path.length) {
       return '_File';
     }
     // else if (Link(path).existsSync()) {
@@ -58,7 +61,9 @@ class LinkText extends SpecialText {
   InlineSpan finishText() {
     // debugPrint('$index $selection');
     bool isHover = false;
-    final String name = toString().substring(2, toString().length - 2);
+    String name = toString().substring(2, toString().length - 2);
+    // name =
+        // LinksRepository(path: path, link: name, context: context).normalise();
     // debugPrint(selection.base.offset.toString());
     var type = _getStringType(path: name);
     TextStyle? style;
