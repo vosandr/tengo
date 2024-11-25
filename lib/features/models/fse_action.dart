@@ -4,9 +4,9 @@ enum  PrimaryAction {
   delete,
 }
 
-// enum SecondaryAction {
-  
-//   // rename, 
-//   // copy,
-//   // move,
-// }
+enum SecondaryAction {
+  readLink
+  // rename, 
+  // copy,
+  // move,
+}

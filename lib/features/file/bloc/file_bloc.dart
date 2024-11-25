@@ -1,7 +1,7 @@
-import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
 import 'package:tengo/features/file/repositories/file_repository.dart';
 import 'package:tengo/features/models/fse_action.dart';
@@ -47,32 +47,26 @@ class FileBloc extends Bloc<FileEvent, FileState> {
       ),
     );
     // print(state.path + state.name);
-    await emit.forEach(
-        _fileRepository
-            .showFileData(state.path + state.name)
-            .transform(utf8.decoder),
-        onData: (content) => state.copyWith(
-              status: () => FileStatus.success,
-              name: () => state.name,
-              path: () => state.path,
-              content: () {
-                // print(content);
-                return state.content + content;
-              },
-            ),
-        onError: (_, __) => state.copyWith(status: () => FileStatus.failure));
+    _fileRepository.init(path: state.path, name: state.name);
+    emit(
+      state.copyWith(
+          status: () => FileStatus.success,
+          name: () => state.name,
+          path: () => state.path,
+          content: () {
+            return state.content + _fileRepository.showFileData();
+          }),
+    );
   }
 
   _onRenameFile(RenameFile event, Emitter<FileState> emit) {
-    _fileRepository.rename(
-        path: event.path, name: event.name, newName: event.newName);
+    _fileRepository.rename(newName: event.newName);
     ShowFile(name: event.newName, path: event.path);
-    PrimaryActionHappened(action: PrimaryAction.read,path: event.path);
+    PrimaryActionHappened(action: PrimaryAction.read, path: event.path);
   }
 
   _onChangeFile(WriteFile event, Emitter<FileState> emit) {
-    _fileRepository.write(
-        name: event.name, content: event.content, path: event.path);
+    _fileRepository.write(content: event.content);
     ShowFile(name: event.name, path: event.path);
   }
 

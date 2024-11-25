@@ -1,9 +1,7 @@
 import 'package:cardoteka/cardoteka.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
-import 'package:tengo/main.dart';
 
 class Hider extends StatelessWidget {
   Hider({required this.showWidget, required this.hideWidget, super.key});

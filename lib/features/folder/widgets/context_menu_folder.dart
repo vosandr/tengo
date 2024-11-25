@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
 import 'package:tengo/main.dart';
-import 'package:tengo/open_source/menu_anchor.dart';
+// import 'package:tengo/open_source/menu_anchor.dart';
 import 'package:tengo/features/models/fse.dart';
 import 'package:tengo/features/models/fse_action.dart';
 import 'package:tengo/widgets/context_menu.dart';
@@ -21,39 +21,18 @@ class FolderContextMenu extends StatelessWidget {
     return BlocBuilder<FolderBloc, FolderState>(
       builder: (context, state) {
         return ContextMenu(
+          menuMode: ContextMenuMode.secondaryKey,
           disabled: disabled,
           menuChildren: [
             IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  context.read<FolderBloc>().add(BooleanVarChanged(
-                      booleanVar: BooleanVar.textFieldEnabled, value: true));
-                  // context.read<FolderBloc>().add(PrimaryActionHappened(
-                  //     action: PrimaryAction.create, path: state.path+text));
-                }),
-            // SubmenuButton(
-            //   child: Icon(Icons.drive_file_rename_outline),
-            //   menuChildren: [
-            //     SizedBox(
-            //         width: 100,
-            //         child: TextField(
-            //           onSubmitted: (text) {
-            //             // context.read<FolderBloc>().add(ActionHappened(action: FseAction.rename, path: widget.fse.name, newPath: text));
-            //           },
-            //         ))
-            //   ],
-            // ),
-            IconButton(
               onPressed: () {
                 context.read<FolderBloc>().add(PrimaryActionHappened(
-                    action: PrimaryAction.delete, path: state.path + fse.name));
-                // context.read<FolderBloc>().add(ShowFolder(path: state.path));
+                    action: PrimaryAction.delete, path: fse.name));
+                // context.read<FolderBloc>().add(PrimaryActionHappened(
+                //     action: PrimaryAction.read, path: state.path));
               },
-              icon: Icon(Icons.remove),
+              icon: const Icon(Icons.remove),
             ),
-            // MenuItemButton(onPressed: () {}, child: Icon(Icons.copy)),
-            // MenuItemButton(onPressed: () {}, child: Icon(Icons.cut)),
-            // MenuItemButton(onPressed: () {}, child: Icon(Icons.paste)),
           ],
           child: child,
         );

@@ -1,4 +1,3 @@
-import 'dart:async';
 // import 'dart:developer';
 // import 'dart:io';
 import 'package:bloc/bloc.dart';
@@ -18,15 +17,15 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     // on<ShowFolder>((event, emit) async {
     //   await _onShowFolder(event, emit);
     // });
-    on<PrimaryActionHappened>((event, emit) async {
-      await _onPrimaryActionHappened(event, emit);
+    on<PrimaryActionHappened>((event, emit) {
+      _onPrimaryActionHappened(event, emit);
     });
-    // on<SecondaryActionHappened>((event, emit) async {
-    //   await _onSecondaryActionHappened(event, emit);
+    on<ReadingLinksHappened>((event, emit) {
+      _onReadingLinksHappened(event, emit);
+    });
+    // on<BooleanVarChanged>((event, emit) async {
+    //   await _onBooleanVarChanged(event, emit);
     // });
-    on<BooleanVarChanged>((event, emit) async {
-      await _onBooleanVarChanged(event, emit);
-    });
   }
 
   final FolderRepository _folderRepository;
@@ -39,53 +38,82 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   //   await _loadData(emit);
   // }
 
-  Future<void> _onPrimaryActionHappened(
-      PrimaryActionHappened event, Emitter<FolderState> emit) async {
+  void _onPrimaryActionHappened(
+      PrimaryActionHappened event, Emitter<FolderState> emit) {
     _clearData(event, emit);
-    await _folderRepository.primaryAction(
-        action: event.action, path: event.path);
+
+    emit(state.copyWith(
+      status: () => FolderStatus.success,
+      path: () {
+        if (event.action != PrimaryAction.read) {
+          return _folderRepository.toParentFolder(path: state.path);
+        }
+        return state.path;
+      },
+      fseList: () =>
+          state.fseList +
+          _folderRepository.primaryAction(
+              action: event.action, path: state.path),
+    ));
+    // print(state.fseList.map((fse) {
+    //   return fse.name;
+    // }));
+    // await _folderRepository.primaryAction(
+    //     action: event.action, path: event.path);
+
     // await _clearData(SecondaryActionHappened(action: Prima, path: path), emit)
-    await _readData(emit);
+    // _doingAction(event, emit);
     // ShowFolder(path: event.path);
   }
 
-  // _onSecondaryActionHappened(
-  //     SecondaryActionHappened event, Emitter<FolderState> emit) {
-  //   _folderRepository.secondaryAction(
-  //     action: event.action,
-  //     path: event.path,
-  //     secondaryPath: event.secondaryPath,
-  //   );
-  // }
+  _onReadingLinksHappened(
+      ReadingLinksHappened event, Emitter<FolderState> emit) {
+    _clearDataInLinks(
+        event,
+        emit);
 
-  _onBooleanVarChanged(BooleanVarChanged event, Emitter<FolderState> emit) {
-    switch (event.booleanVar) {
-      case BooleanVar.textFieldEnabled:
-        emit(state.copyWith(textFieldEnabled: () => event.value));
-    }
-  }
-
-  void _clearData(PrimaryActionHappened event, Emitter<FolderState> emit) {
     emit(state.copyWith(
-      fseList: () => const [],
-      status: () => FolderStatus.loading,
-      path: () => _folderRepository.toAbsolute(path: state.path + event.path),
+      status: () => FolderStatus.success,
+      path: () {
+        return state.path;
+      },
+      fseList: () =>
+          state.fseList +
+          _folderRepository.primaryAction(
+              action: PrimaryAction.read, path: state.path),
     ));
   }
 
-  Future<void> _readData(Emitter<FolderState> emit) async {
-    await emit.forEach<List<Fse>>(
-      _folderRepository.showFolderData(path: state.path),
-      onData: (fseList) {
-        return state.copyWith(
-          status: () => FolderStatus.success,
-          path: () => state.path,
-          fseList: () => state.fseList + fseList,
-        );
-      },
-      onError: (_, __) => state.copyWith(
-        status: () => FolderStatus.failure,
-      ),
-    );
+  // _onBooleanVarChanged(BooleanVarChanged event, Emitter<FolderState> emit) {
+  //   switch (event.booleanVar) {
+  //     case BooleanVar.textFieldEnabled:
+  //       emit(state.copyWith(textFieldEnabled: () => event.value));
+  //     // print(state);
+  //   }
+  // }
+
+  void _clearData(PrimaryActionHappened event, Emitter<FolderState> emit) {
+    // print(state.path);
+    emit(state.copyWith(
+      fseList: () => const [],
+      status: () => FolderStatus.loading,
+      path: () =>
+          _folderRepository.toAbsoluteFolder(path: state.path + event.path),
+    ));
+
+    // print(state.path);
   }
+
+  void _clearDataInLinks(ReadingLinksHappened event, Emitter<FolderState> emit) {
+        emit(state.copyWith(
+      fseList: () => const [],
+      status: () => FolderStatus.loading,
+      path: () =>
+          _folderRepository.toAbsoluteFolder(path: event.path+ event.name),
+    ));
+  }
+  // Future<void> _doingAction(
+  //     PrimaryActionHappened event, Emitter<FolderState> emit) async {
+
+  // }
 }

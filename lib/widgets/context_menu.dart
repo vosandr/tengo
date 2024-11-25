@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tengo/open_source/menu_anchor.dart';
+//import 'package:tengo/open_source/menu_anchor.dart';
 
 enum ContextMenuMode {
   primaryKey,
@@ -31,17 +31,20 @@ class _ContextMenuState extends State<ContextMenu> {
   Widget build(BuildContext context) {
     if (widget.disabled == false) {
       return GestureDetector(
-          onSecondaryTapDown: widget.menuMode == ContextMenuMode.secondaryKey
-              ? _handleSecondaryTapDown
-              : null,
-          onTapDown: _handleTapDown,
-          child: MenuAnchor(
-              childFocusNode: _buttonFocusNode,
-              controller: _menuController,
-              menuChildren: widget.menuChildren,
-              child: widget.child));
+        onSecondaryTapDown: widget.menuMode == ContextMenuMode.secondaryKey
+            ? _handleSecondaryTapDown
+            : null,
+        onTapDown: _handleTapDown,
+        child: MenuAnchor(
+            childFocusNode: _buttonFocusNode,
+            controller: _menuController,
+            menuChildren: widget.menuChildren,
+            child: widget.child),
+      );
+    } else{
+      return widget.child;
     }
-    return widget.child;
+    
   }
 
   void _handleSecondaryTapDown(TapDownDetails details) {

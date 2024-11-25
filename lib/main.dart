@@ -5,7 +5,6 @@ import 'package:cardoteka/cardoteka.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:tengo/another_windows/cubit/settings_cubit.dart';
-import 'package:tengo/features/settings/settings.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
@@ -30,6 +29,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final settings = SettingsCardoteka(
+      config: CardotekaConfig(
+          name: 'settings',
+          cards: SettingsCards.values,
+          converters: SettingsCards.converters));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Builder(builder: (context) {
@@ -38,24 +42,24 @@ class MainApp extends StatelessWidget {
             providers: [
               BlocProvider(
                 create: (context) =>
-                    FolderBloc(folderRepository: FolderRepository())
+                    FolderBloc(folderRepository: FolderRepository(currentPath: settings.get(SettingsCards.startingPoint)))
                       ..add(
-                        const PrimaryActionHappened(
+                        PrimaryActionHappened(
                           action: PrimaryAction.read,
-                          path: './',
+                          path: settings.get(SettingsCards.startingPoint),
                         ),
                       ),
               ),
               BlocProvider(
                 create: (context) =>
-                    FileBloc(fileRepository: const FileRepository()),
+                    FileBloc(fileRepository: FileRepository()),
               ),
             ],
             child: const ResizableContainer(
               divider: ResizableDivider(thickness: 2),
               children: [
                 ResizableChild(
-                  child: FolderWidget(),
+                  child: FolderPage(),
                   size: ResizableSize.ratio(1 / 4),
                 ),
                 ResizableChild(

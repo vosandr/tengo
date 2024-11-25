@@ -5,41 +5,53 @@ import 'package:cardoteka/cardoteka.dart';
 import 'package:tengo/features/models/fse_action.dart';
 import 'package:tengo/features/models/fse.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
-import '../../file/repositories/file_links_repository.dart';
+import 'folder_links_repository.dart';
 
 class FolderRepository {
-  FolderRepository();
+  FolderRepository({required this.currentPath});
+  // final String _path='';
   final settings = SettingsCardoteka(
       config: CardotekaConfig(
           name: 'settings',
           cards: SettingsCards.values,
           converters: SettingsCards.converters));
-  Stream<List<Fse>> showFolderData({required String path}) async* {
-    // folder = Folder();
-    List<Fse> linkedFseList = FileLinksRepository().showPriorityFseList(
-        priorityFse: Fse(
-            name: settings.get(SettingsCards.priorityFseName),
-            type: getStringType(
-              path: settings.get(SettingsCards.priorityFseName),
-            ),
-            path: path),
-        pattern: RegExp(r'\[\[.*?\]\]'));
-    List<Fse> sortedFseList = [];
+  String currentPath;
+  late List<Fse> _fseList;
+  late Fse _currentFolderFse;
 
-    var dataList = Directory(path).listSync();
+  List<Fse> showFolderData() {
+    // folder = Folder();
+    List<Fse> linkedFseList = FolderLinksRepository(
+      mainPriorityFse: Fse(
+          name: settings.get(SettingsCards.priorityFseName),
+          type: getStringType(
+            path: settings.get(SettingsCards.priorityFseName),
+          ),
+          path: currentPath),
+      pattern: RegExp(
+        settings.get(SettingsCards.patternFromLinks),
+      ),
+    ).showPriorityFseList();
+
+    List<Fse> sortingFseList = [];
+    // print(path);
+    var dataList = Directory(currentPath).listSync();
 
     // print('$priorityPath ${fse.name}');
     for (var data in dataList) {
-      Fse fse = format(Fse(name: data.path, type: data.runtimeType.toString()));
-      if (linkedFseList.every((linkedFse) => linkedFse.name != fse.name)) {
-        sortedFseList.add(fse);
+      _currentFolderFse =
+          Fse(name: data.path, type: data.runtimeType.toString());
+      format();
+      if (linkedFseList
+          .every((linkedFse) => linkedFse.name != _currentFolderFse.name)) {
+        sortingFseList.add(_currentFolderFse);
       }
     }
-    yield linkedFseList + sort(sortedFseList);
+    return linkedFseList + sort(sortingFseList);
   }
 
-  List<Fse> sort(List<Fse> fseList) {
-    fseList.sort((a, b) {
+  List<Fse> sort(List<Fse> sortingFseList) {
+    sortingFseList.sort((a, b) {
       if (a.name.startsWith('.') && b.name.startsWith('.')) {
         return a.name.substring(1).compareTo(b.name.toLowerCase().substring(1));
       } else if (a.name.startsWith('.')) {
@@ -49,26 +61,41 @@ class FolderRepository {
       }
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
-    return fseList;
+    return sortingFseList;
   }
 
-  Fse format(Fse fse) {
-    fse.name = fse.name.substring(fse.name.lastIndexOf('/') + 1);
-    if (fse.type == '_Directory') {
-      fse.name += '/';
+  format() {
+    _currentFolderFse.name = _currentFolderFse.name.substring(
+        _currentFolderFse.name.lastIndexOf(Platform.pathSeparator) + 1);
+    if (_currentFolderFse.type == '_Directory') {
+      _currentFolderFse.name += Platform.pathSeparator;
     }
-    return fse;
+    // return _currentFolderFse;
   }
 
-  String toAbsolute({required String path}) {
+  String toAbsoluteFolder({required String path}) {
     path = Directory(path).absolute.path;
     if (path.substring(path.length - 3, path.length) == '../') {
       path = path.substring(0, path.length - 3);
-      path = path.substring(0, path.lastIndexOf('/'));
-      path = path.substring(0, path.lastIndexOf('/') + 1);
+      path = path.substring(0, path.lastIndexOf(Platform.pathSeparator));
+      path = path.substring(0, path.lastIndexOf(Platform.pathSeparator) + 1);
     } else if (path.substring(path.length - 2, path.length) == './') {
       path = path.substring(0, path.length - 2);
     }
+
+    return path;
+  }
+
+  toParentFolder({required String path}) {
+    // print(path);
+    // print('${path.length.toString()} ${path.lastIndexOf(Platform.pathSeparator)}');
+    if (path.length == path.lastIndexOf(Platform.pathSeparator) + 1) {
+      // print(path);
+      path = path.substring(0, path.length - 1);
+    }
+    // print(path);
+    path = path.substring(0, path.lastIndexOf(Platform.pathSeparator) + 1);
+    // print(path);
     return path;
   }
 
@@ -89,10 +116,10 @@ class FolderRepository {
   }
 
   String getStringType({required String path}) {
-    // print('${path.lastIndexOf('/') == path.length} ${path.lastIndexOf('/')} ${path.length}');
-    if (path.lastIndexOf('/') + 1 == path.length) {
+    // print('${path.lastIndexOf(Platform.pathSeparator) == path.length} ${path.lastIndexOf(Platform.pathSeparator)} ${path.length}');
+    if (path.lastIndexOf(Platform.pathSeparator) + 1 == path.length) {
       return '_Directory';
-    } else if (path.lastIndexOf('/') != path.length) {
+    } else if (path.lastIndexOf(Platform.pathSeparator) != path.length) {
       return '_File';
     }
     // else if (Link(path).existsSync()) {
@@ -101,18 +128,23 @@ class FolderRepository {
     throw 'Not the type from getTypeFromString';
   }
 
-  primaryAction(
+  List<Fse> primaryAction(
       {required PrimaryAction action, required String path}) {
     var type = getStringType(path: path);
+    var ioFse = getFseType(type: type, path: path);
+    // print(parentIoFse);
     // print(type);
     switch (action) {
       case PrimaryAction.read:
-        return showFolderData(path: path);
+        currentPath = path;
       case PrimaryAction.delete:
-        return getFseType(type: type, path: path).delete();
+        ioFse.delete();
+        currentPath = ioFse.parent.path;
       case PrimaryAction.create:
-        return create(type: type, path: path);
+        create(type: type, path: path);
+        currentPath = ioFse.parent.path;
     }
+    return showFolderData();
   }
 
   // secondaryAction(
@@ -122,8 +154,8 @@ class FolderRepository {
   //   // var type = getStringType(path: path);
   //   // var secondaryType = getStringType(path: secondaryPath);
   //   switch (action) {
-  //     case SecondaryAction.read:
-  //       return showFolderData(
+  //     case SecondaryAction.readLink:
+  //       return FolderLi(
   //           path: path,);
   //   }
   // }

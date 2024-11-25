@@ -1,2 +1,2 @@
-export 'file/file.dart';
-export 'folder/folder.dart';
+export 'file/widgets/file.dart';
+export 'folder/widgets/folder_page.dart';

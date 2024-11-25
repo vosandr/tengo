@@ -1,4 +1,6 @@
 // import 'package:desktop_multi_window/desktop_multi_window.dart';
+import 'dart:io';
+
 import 'package:cardoteka/cardoteka.dart';
 import 'package:figma_squircle/figma_squircle.dart';
 import 'package:flutter/material.dart' hide Card;
@@ -32,14 +34,14 @@ class _SettingsState extends State<Settings> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.grid_3x3)),
+              icon: const Icon(Icons.grid_3x3)),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Table(
               defaultVerticalAlignment: TableCellVerticalAlignment.bottom,
               border: TableBorder.all(style: BorderStyle.none),
-              columnWidths: const <int, TableColumnWidth> {
+              columnWidths: const <int, TableColumnWidth>{
                 0: FlexColumnWidth(5),
                 1: FlexColumnWidth(8),
                 2: FixedColumnWidth(38),
@@ -49,27 +51,25 @@ class _SettingsState extends State<Settings> {
               // direction: Axis.vertical,
               children: [
                 TableRow(
-          
+
                     // mainAxisSize: MainAxisSize.min,
                     // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     // textBaseline: TextBaseline.alphabetic,
                     children: [
-                      TableCell(
+                      const TableCell(
                         child: Icon(
                           Icons.drive_file_rename_outline,
                         ),
                       ),
-                      TableCell(child: SizedBox.shrink()),
+                      const TableCell(child: SizedBox.shrink()),
                       // Spacer(flex: 4),
                       TableCell(
                         child: InkWell(
                           focusColor: Colors.black,
                           onTap: () async {
-                            
-
                             setState(() {
                               cardoteka.set(SettingsCards.isEditMode,
-                                !(cardoteka.get(SettingsCards.isEditMode)));
+                                  !(cardoteka.get(SettingsCards.isEditMode)));
                             });
                             // var prefs = await SharedPreferences.getInstance();
                             // prefs.get('editingMode')
@@ -77,29 +77,32 @@ class _SettingsState extends State<Settings> {
                             // SettingsModel().changeEditingMode();
                           },
                           customBorder: SmoothRectangleBorder(
-                              borderRadius: SmoothBorderRadius(cornerRadius: 9)),
+                              borderRadius:
+                                  SmoothBorderRadius(cornerRadius: 9)),
                           child: Container(
                             width: 38,
                             height: 38,
                             padding: const EdgeInsets.all(12),
                             decoration: ShapeDecoration(
                                 // color: Colors.amber,
-                                color: cardoteka.get(SettingsCards.isEditMode) ==
-                                        false
-                                    ? Colors.grey[600]?.withOpacity(0.5)
-                                    : Colors.purple,
+                                color:
+                                    cardoteka.get(SettingsCards.isEditMode) ==
+                                            false
+                                        ? Colors.grey[600]?.withOpacity(0.5)
+                                        : Colors.purple,
                                 shape: SmoothRectangleBorder(
                                     borderRadius:
                                         SmoothBorderRadius(cornerRadius: 14))),
                           ),
                         ),
                       ),
-                      TableCell(child: SizedBox.shrink()),
+                      const TableCell(child: SizedBox.shrink()),
                       TableCell(
                         child: RichText(
                           textAlign: TextAlign.justify,
                           text: TextSpan(
-                              style: TextStyle(color: Colors.black, fontSize: 24),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 24),
                               children: [
                                 TextSpan(text: '600'),
                                 WidgetSpan(
@@ -119,7 +122,7 @@ class _SettingsState extends State<Settings> {
                       TableCell(
                         child: Center(
                           child: RichText(
-                            text: TextSpan(children: [
+                            text: const TextSpan(children: [
                               WidgetSpan(
                                 child: Icon(
                                   Icons.file_present_sharp,
@@ -134,7 +137,7 @@ class _SettingsState extends State<Settings> {
                           ),
                         ),
                       ),
-          
+
                       // Spacer(flex: 8),
                       // Flexible(
                       //   // flex: 1,
@@ -158,31 +161,122 @@ class _SettingsState extends State<Settings> {
                       //     ),
                       //   ),
                       // ),
-                      TableCell(child: SizedBox.shrink()),
+                      const TableCell(child: SizedBox.shrink()),
                       TableCell(
                           child: IconButton(
                               onPressed: () {
-                                cardoteka.set(SettingsCards.priorityFseName, SettingsCards.priorityFseName.defaultValue);
-                                setState(() {
-                                  
-                                });
-                              }, icon: Icon(Icons.refresh))),
-                      TableCell(child: SizedBox.shrink()),
+                                cardoteka.set(SettingsCards.priorityFseName,
+                                    SettingsCards.priorityFseName.defaultValue);
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.refresh))),
+                      const TableCell(child: SizedBox.shrink()),
                       TableCell(
-                          child: TextField(
-                            
-                              // expands: true,
-                              maxLines: 1,
-                              minLines: null,
-                                                  controller: TextEditingController(text: cardoteka.get(SettingsCards.priorityFseName)),
-                                                  onSubmitted: (value) {
+                        child: TextField(
+                          // expands: true,
+                          maxLines: 1,
+                          minLines: null,
+                          controller: TextEditingController(
+                              text:
+                                  cardoteka.get(SettingsCards.priorityFseName)),
+                          onSubmitted: (value) {
                             cardoteka.set(SettingsCards.priorityFseName, value);
                             // cardoteka.get(SettingsCards.priorityFseName);
                             setState(() {});
-                                                  },
-                                                ),
-                          )
+                          },
+                        ),
+                      )
                     ]),
+                TableRow(children: [
+                  TableCell(
+                    child: Center(
+                      child: RichText(
+                        text: const TextSpan(children: [
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.folder,
+                            ),
+                          ),
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.home_filled,
+                            ),
+                          )
+                        ]),
+                      ),
+                    ),
+                  ),
+                  const TableCell(child: SizedBox.shrink()),
+                  TableCell(
+                      child: IconButton(
+                          onPressed: () {
+                            cardoteka.set(SettingsCards.startingPoint,
+                                SettingsCards.startingPoint.defaultValue);
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.refresh))),
+                  const TableCell(child: SizedBox.shrink()),
+                  TableCell(
+                    child: TextField(
+                      // readOnly: true,
+                      // expands: true,
+                      maxLines: 1,
+                      minLines: null,
+                      controller: TextEditingController(
+                          text: cardoteka.get(SettingsCards.startingPoint)),
+                      onSubmitted: (value) {
+                        cardoteka.set(SettingsCards.startingPoint, value);
+                        // cardoteka.get(SettingsCards.priorityFseName);
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ]),
+                TableRow(children: [
+                  TableCell(
+                    child: Center(
+                      child: RichText(
+                        text: const TextSpan(children: [
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.file_present_sharp,
+                            ),
+                          ),
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.file_open,
+                            ),
+                          )
+                        ]),
+                      ),
+                    ),
+                  ),
+                  const TableCell(child: SizedBox.shrink()),
+                  TableCell(
+                      child: IconButton(
+                          onPressed: () {
+                            cardoteka.set(SettingsCards.patternFromLinks,
+                                SettingsCards.patternFromLinks.defaultValue);
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.refresh))),
+                  const TableCell(child: SizedBox.shrink()),
+                  TableCell(
+                    child: TextField(
+                      readOnly: true,
+                      // expands: true,
+                      maxLines: 1,
+                      minLines: null,
+                      controller: TextEditingController(
+                          text: cardoteka.get(SettingsCards.patternFromLinks)),
+                      onSubmitted: (value) {
+                        cardoteka.set(SettingsCards.patternFromLinks, value);
+                        // cardoteka.get(SettingsCards.priorityFseName);
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ]),
               ]),
         ));
   }

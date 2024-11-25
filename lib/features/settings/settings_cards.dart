@@ -4,7 +4,8 @@ import 'package:cardoteka/cardoteka.dart';
 enum SettingsCards<T extends Object> implements Card<T> {
   isEditMode(DataType.bool, false),
   priorityFseName(DataType.string, '00.md'),
-  patternFromPriority(DataType.string, r'\[\[.*?\]\]'),
+  patternFromLinks(DataType.string, r'\[\[.*?\]\]'),
+  startingPoint(DataType.string, './'),
   ;
 
   const SettingsCards(this.type, this.defaultValue);

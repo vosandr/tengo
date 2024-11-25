@@ -35,13 +35,20 @@ class FolderAppBar extends StatefulWidget {
 }
 
 class _FolderAppBarState extends State<FolderAppBar> {
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _pathEditingController = TextEditingController();
+  final TextEditingController _createEditingController =
+      TextEditingController();
   // final FocusNode _focusNode = FocusNode();
   // String path = '';
   // @override
   // void didUpdateWidget(covariant FolderAppBar oldWidget) {
   //   super.didUpdateWidget(oldWidget);
-
+  final bool _firstCalled = false;
+  // }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _textEditingController.addListener(() {_textEditingController.});
   // }
 
   @override
@@ -53,22 +60,48 @@ class _FolderAppBarState extends State<FolderAppBar> {
         return Column(children: [
           AppBar(
             title: TextField(
-              onSubmitted: (value) {
-                context.read<FolderBloc>().add(BooleanVarChanged(
-                    booleanVar: BooleanVar.textFieldEnabled, value: true));
-              },
-              controller: _textEditingController
-                ..value = TextEditingValue(
-                    text: state.path,
-                    selection:
-                        TextSelection.collapsed(offset: state.path.length)),
-              // autofocus: true,
-              // ..value = TextEditingValue(
-              //     composing: TextRange.collapsed(state.path.length),
-              //     text: state.path,
-              //     selection:
-              //         TextSelection.collapsed(offset: state.path.length)),
+              // onSubmitted: (value) {},
+              controller: _pathEditingController..text = state.path,
             ),
+          ),
+          Hider(
+            showWidget: Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 15),
+              child: AppBar(
+                // bottom: PreferredSize(preferredSize: Size(1, 1), child: SizedBox()),
+                // leading: Padding(
+                // padding: const EdgeInsets.all(8.0),
+                titleSpacing: 7,
+                leadingWidth: 30,
+                leading:
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 8),
+                    //   child:
+                    // Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    // children: [
+                    const Icon(Icons.add),
+            
+                title: Padding(
+                  padding: const EdgeInsets.only(right: 15),
+                  child: TextField(
+                    onSubmitted: (value) {
+                      _createEditingController.text = '';
+                      context.read<FolderBloc>().add(
+                            PrimaryActionHappened(
+                              action: PrimaryAction.create,
+                              path: value,
+                            ),
+                          );
+                      // context.read<FolderBloc>().add(PrimaryActionHappened(
+                      //     action: PrimaryAction.read, path: value));
+                    },
+                    controller: _createEditingController,
+                  ),
+                ),
+              ),
+            ),
+            hideWidget: const SizedBox.shrink(),
           ),
           AppBar(
             // clipBehavior: Clip.antiAlias,
@@ -86,15 +119,19 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   //     child: IconButton(
                   //         onPressed: () {},
                   //         icon: Icon(Icons.curtains_closed_outlined))),
-                  Hider(
-                    showWidget: IconButton(
-                      // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
-                      onPressed: () {},
+                  // Hider(
+                  //   showWidget: IconButton(
+                  //     // shape: SmoothRectangleBorder(borderRadius: SmoothBorderRadius(cornerRadius: 14)),
+                  //     onPressed: () {
+                  //       context.read<FolderBloc>().add(BooleanVarChanged(
+                  //           booleanVar: BooleanVar.textFieldEnabled,
+                  //           value: true));
+                  //     },
 
-                      icon: Icon(Icons.add),
-                    ),
-                    hideWidget: SizedBox.shrink(),
-                  ),
+                  //     icon: Icon(Icons.add),
+                  //   ),
+                  //   hideWidget: SizedBox.shrink(),
+                  // ),
                   // Expanded(
                   //   child: IconButton(
                   //     onPressed: () {},
@@ -103,10 +140,17 @@ class _FolderAppBarState extends State<FolderAppBar> {
                   // ),
                   IconButton(
                       onPressed: () {
-                        context.read<FolderBloc>().add(PrimaryActionHappened(
+                        context.read<FolderBloc>().add(const PrimaryActionHappened(
                             action: PrimaryAction.read, path: ''));
                       },
-                      icon: Icon(Icons.refresh)),
+                      icon: const Icon(Icons.refresh)),
+
+                  IconButton(
+                      onPressed: () async {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const Settings()));
+                      },
+                      icon: const Icon(Icons.settings)),
                   IconButton(
                       onPressed: () {
                         context.read<FolderBloc>().add(
@@ -114,15 +158,8 @@ class _FolderAppBarState extends State<FolderAppBar> {
                                 action: PrimaryAction.read, path: '../'));
                       },
                       icon: const Icon(Icons.grid_3x3)),
-
-                  IconButton(
-                      onPressed: () async {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const Settings()));
-                      },
-                      icon: Icon(Icons.settings)),
                 ]),
-          )
+          ),
         ]);
       },
     );

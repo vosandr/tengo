@@ -37,13 +37,13 @@ final class BooleanVarChanged extends FolderEvent {
   final BooleanVar booleanVar;
   final bool value;
 }
-// final class SecondaryActionHappened extends FolderEvent {
-//   const SecondaryActionHappened({required this.action, required this.path, required this.secondaryPath});
 
-//   final SecondaryAction action;
-//   final String path;
-//   final String secondaryPath;
-// }
+final class ReadingLinksHappened extends FolderEvent {
+  const ReadingLinksHappened({required this.path, required this.name});
+  final String path;
+  final String name;
+}
+
 // final class GoToFolder extends FolderEvent {
 //   const GoToFolder({this.path = ''});
 
