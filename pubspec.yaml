@@ -17,6 +17,7 @@ dependencies:
   flutter_build_debian: ^0.0.1
   extended_text_field: ^16.0.0
   cardoteka: ^1.1.0
+  path_provider: ^2.1.5
   # desktop_multi_window: ^0.2.0
   # window_manager_plus: 
   # bitsdojo_window: ^0.1.6

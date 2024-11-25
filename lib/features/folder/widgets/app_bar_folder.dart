@@ -75,7 +75,7 @@ class _FolderAppBarState extends State<FolderAppBar> {
               _pathScrollController.offset) {
         _pathScrollController.animateTo(
             _pathScrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 10),
+            duration: const Duration(milliseconds: 1),
             curve: Curves.linear);
       }
     });
@@ -91,7 +91,10 @@ class _FolderAppBarState extends State<FolderAppBar> {
           AppBar(
             title: TextField(
               scrollController: _pathScrollController,
-              
+              // onSubmitted: (value) {
+              //   context.read<FolderBloc>().add(PrimaryActionHappened(
+              //       action: PrimaryAction.read, path: value));
+              // },
               // onSubmitted: (value) {},
               controller: _pathTextController..text = state.path,
             ),

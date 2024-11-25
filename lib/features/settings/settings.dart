@@ -196,11 +196,12 @@ class _SettingsState extends State<Settings> {
                   ),
                   const TableCell(child: SizedBox.shrink()),
                   TableCell(
-                      child: IconButton(
+                      child: 
+                      IconButton(
                           onPressed: () {
-                            cardoteka.set(SettingsCards.startingPoint,
-                                SettingsCards.startingPoint.defaultValue);
-                            setState(() {});
+                            // cardoteka.set(SettingsCards.startingPoint,
+                            //     SettingsCards.startingPoint.defaultValue);
+                            // setState(() {});
                           },
                           icon: const Icon(Icons.refresh))),
                   const TableCell(child: SizedBox.shrink()),
