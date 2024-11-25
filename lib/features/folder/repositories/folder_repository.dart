@@ -18,6 +18,14 @@ class FolderRepository {
   String currentPath;
   late List<Fse> _fseList;
   late Fse _currentFolderFse;
+  String _changePathSeparator(String path) {
+    if (Platform.pathSeparator != settings.get(SettingsCards.pathSeparator)) {
+      return path.replaceAll(
+          Platform.pathSeparator, settings.get(SettingsCards.pathSeparator));
+    } else {
+      return path;
+    }
+  }
 
   List<Fse> showFolderData() {
     // folder = Folder();
@@ -39,8 +47,9 @@ class FolderRepository {
 
     // print('$priorityPath ${fse.name}');
     for (var data in dataList) {
-      _currentFolderFse =
-          Fse(name: data.path, type: data.runtimeType.toString());
+      _currentFolderFse = Fse(
+          name: _changePathSeparator(data.path),
+          type: data.runtimeType.toString());
       format();
       if (linkedFseList
           .every((linkedFse) => linkedFse.name != _currentFolderFse.name)) {
@@ -65,20 +74,23 @@ class FolderRepository {
   }
 
   format() {
-    _currentFolderFse.name = _currentFolderFse.name.substring(
-        _currentFolderFse.name.lastIndexOf(Platform.pathSeparator) + 1);
+    _currentFolderFse.name = _currentFolderFse.name.substring(_currentFolderFse
+            .name
+            .lastIndexOf(settings.get(SettingsCards.pathSeparator)) +
+        1);
     if (_currentFolderFse.type == '_Directory') {
-      _currentFolderFse.name += Platform.pathSeparator;
+      _currentFolderFse.name += settings.get(SettingsCards.pathSeparator);
     }
     // return _currentFolderFse;
   }
 
   String toAbsoluteFolder({required String path}) {
-    path = Directory(path).absolute.path;
+    path = (Directory(path).absolute.path);
+    path = _changePathSeparator(path);
     if (path.substring(path.length - 3, path.length) == '../') {
       path = path.substring(0, path.length - 3);
-      path = path.substring(0, path.lastIndexOf(Platform.pathSeparator));
-      path = path.substring(0, path.lastIndexOf(Platform.pathSeparator) + 1);
+      path = path.substring(0, path.lastIndexOf(settings.get(SettingsCards.pathSeparator)));
+      path = path.substring(0, path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1);
     } else if (path.substring(path.length - 2, path.length) == './') {
       path = path.substring(0, path.length - 2);
     }
@@ -89,12 +101,15 @@ class FolderRepository {
   toParentFolder({required String path}) {
     // print(path);
     // print('${path.length.toString()} ${path.lastIndexOf(Platform.pathSeparator)}');
-    if (path.length == path.lastIndexOf(Platform.pathSeparator) + 1) {
+    path = _changePathSeparator(path);
+    if (path.length ==
+        path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1) {
       // print(path);
       path = path.substring(0, path.length - 1);
     }
     // print(path);
-    path = path.substring(0, path.lastIndexOf(Platform.pathSeparator) + 1);
+    path = path.substring(
+        0, path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1);
     // print(path);
     return path;
   }
@@ -117,9 +132,11 @@ class FolderRepository {
 
   String getStringType({required String path}) {
     // print('${path.lastIndexOf(Platform.pathSeparator) == path.length} ${path.lastIndexOf(Platform.pathSeparator)} ${path.length}');
-    if (path.lastIndexOf(Platform.pathSeparator) + 1 == path.length) {
+    if (path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1 ==
+        path.length) {
       return '_Directory';
-    } else if (path.lastIndexOf(Platform.pathSeparator) != path.length) {
+    } else if (path.lastIndexOf(settings.get(SettingsCards.pathSeparator)) !=
+        path.length) {
       return '_File';
     }
     // else if (Link(path).existsSync()) {
@@ -144,6 +161,7 @@ class FolderRepository {
         create(type: type, path: path);
         currentPath = ioFse.parent.path;
     }
+    settings.get(SettingsCards.pathSeparator);
     return showFolderData();
   }
 

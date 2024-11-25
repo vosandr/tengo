@@ -6,6 +6,7 @@ enum SettingsCards<T extends Object> implements Card<T> {
   priorityFseName(DataType.string, '00.md'),
   patternFromLinks(DataType.string, r'\[\[.*?\]\]'),
   startingPoint(DataType.string, './'),
+  pathSeparator(DataType.string, '/'),
   ;
 
   const SettingsCards(this.type, this.defaultValue);

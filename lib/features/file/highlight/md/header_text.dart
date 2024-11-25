@@ -1,4 +1,3 @@
-
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ class LinkText extends SpecialText {
     TextStyle? textStyle, {
     this.start, this.numberHeader=1
   }) : super(HeaderPattern.flag.value*numberHeader, HeaderPattern.endFlag.value, textStyle);
+
   final int? start;
   final int numberHeader;
   @override

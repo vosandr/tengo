@@ -98,21 +98,9 @@ class _SettingsState extends State<Settings> {
                       ),
                       const TableCell(child: SizedBox.shrink()),
                       TableCell(
-                        child: RichText(
-                          textAlign: TextAlign.justify,
-                          text: TextSpan(
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 24),
-                              children: [
-                                TextSpan(text: '600'),
-                                WidgetSpan(
-                                    child: Icon(Icons.currency_ruble_sharp)),
-                                TextSpan(text: '/'),
-                                WidgetSpan(
-                                    child: Icon(Icons.calendar_month_sharp)),
-                              ]),
+                        child: SizedBox.shrink()
                         ),
-                      )
+                      
                     ]),
                 TableRow(
                     // mainAxisSize: MainAxisSize.min,

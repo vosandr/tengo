@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cardoteka/cardoteka.dart';
 import 'package:flutter/material.dart';
 import 'package:tengo/features/models/fse.dart';
+import 'package:tengo/features/settings/settings_cards.dart';
 
 class FolderLinksRepository {
   FolderLinksRepository({required this.mainPriorityFse, required this.pattern});
@@ -9,7 +11,21 @@ class FolderLinksRepository {
   RegExp pattern;
   late Fse _currentPriorityFse;
   late List<Fse> _fsePriorityList;
+   final settings = SettingsCardoteka(
+      config: CardotekaConfig(
+          name: 'settings',
+          cards: SettingsCards.values,
+          converters: SettingsCards.converters));
+    String _changePathSeparator(String path) {
+    if (Platform.pathSeparator != settings.get(SettingsCards.pathSeparator)) {
+      return path.replaceAll(
+          Platform.pathSeparator, settings.get(SettingsCards.pathSeparator));
+    } else {
+      return path;
+    }
+  }
 
+  
   List<Fse> showPriorityFseList() {
     List<Fse> fsePriorityList = [];
 
@@ -25,14 +41,15 @@ class FolderLinksRepository {
       // print(path);
       if (!(path.contains('../'))) {
         String priority;
-        if (path.contains(Platform.pathSeparator)) {
-          priority = path.substring(0, path.indexOf(Platform.pathSeparator));
+        if (path.contains(settings.get(SettingsCards.pathSeparator))) {
+          priority = path.substring(0, path.indexOf(settings.get(SettingsCards.pathSeparator)));
           var priorityDir = Directory(mainPriorityFse.path + priority);
           if (priorityDir.existsSync()) {
             _currentPriorityFse = Fse(
-                name: priorityDir.path,
+                name: _changePathSeparator(priorityDir.path),
                 type: priorityDir.runtimeType.toString(),
-                path: mainPriorityFse.path);
+                path: _changePathSeparator(mainPriorityFse.path)
+                ,);
             // print(_currentPriorityFse ?? 'not been initialised');
             fsePriorityList.add(
               format(),
@@ -40,17 +57,18 @@ class FolderLinksRepository {
           } else {
             // debugPrint('Folder "${priorityDir.path}" not exists');
           }
-        } else if (!(path.contains(Platform.pathSeparator))) {
+        } else if (!(path.contains(settings.get(SettingsCards.pathSeparator)))) {
           priority = path;
           var priorityFile = File(mainPriorityFse.path + priority);
           if (priorityFile.existsSync()) {
             _currentPriorityFse = Fse(
-                name: priorityFile.path,
+                name: _changePathSeparator(priorityFile.path),
                 type: priorityFile.runtimeType.toString(),
-                path: mainPriorityFse.path);
+                path: _changePathSeparator(mainPriorityFse.path),
+                );
             fsePriorityList.add(format());
           } else {
-            debugPrint('File "${priorityFile.path}" not Exists');
+            debugPrint('File "${_changePathSeparator(priorityFile.path)}" not Exists');
           }
         }
       }
@@ -80,14 +98,14 @@ class FolderLinksRepository {
 
   String toParent({required String path}) {
     return path.substring(
-        0, path.length - path.indexOf(Platform.pathSeparator));
+        0, path.length - path.indexOf(settings.get(SettingsCards.pathSeparator)));
   }
 
   format() {
     _currentPriorityFse.name = _currentPriorityFse.name.substring(
-        _currentPriorityFse.name.lastIndexOf(Platform.pathSeparator) + 1);
+        _currentPriorityFse.name.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1);
     if (_currentPriorityFse.type == '_Directory') {
-      _currentPriorityFse.name += Platform.pathSeparator;
+      _currentPriorityFse.name += settings.get(SettingsCards.pathSeparator);
     }
     return _currentPriorityFse;
     // return _currentFolderFse;
