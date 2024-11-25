@@ -1,3 +1,9 @@
-# tengo_simple
+Всем здравствуйте. Данное приложение создано для обработки информации и создания информационных баз данных(ИБД - имитация бурной деятельности. XD).  
 
-A new Flutter project.
+tengo_linux: https://github.com/vosandr/tengo_linux  
+
+Для осуществления материальной поддержки сюда:  
+https://boosty.to/vosirandr
+
+Для связи со мной пишите сюда:  
+vosirandr@gmail.com
