@@ -11,12 +11,12 @@ class FolderLinksRepository {
   RegExp pattern;
   late Fse _currentPriorityFse;
   late List<Fse> _fsePriorityList;
-   final settings = SettingsCardoteka(
+  final settings = SettingsCardoteka(
       config: CardotekaConfig(
           name: 'settings',
           cards: SettingsCards.values,
           converters: SettingsCards.converters));
-    String _changePathSeparator(String path) {
+  String _changePathSeparator(String path) {
     if (Platform.pathSeparator != settings.get(SettingsCards.pathSeparator)) {
       return path.replaceAll(
           Platform.pathSeparator, settings.get(SettingsCards.pathSeparator));
@@ -25,7 +25,6 @@ class FolderLinksRepository {
     }
   }
 
-  
   List<Fse> showPriorityFseList() {
     List<Fse> fsePriorityList = [];
 
@@ -37,19 +36,23 @@ class FolderLinksRepository {
     fsePriorityList.add(mainPriorityFse);
     var matches = pattern.allMatches(fileContent.toString());
     for (final Match m in matches) {
-      var path = m[0]!.substring(2, m[0]!.length - 2);
+      var path = m[0]!;
       // print(path);
-      if (!(path.contains('../'))) {
+      if (!(path.contains('../')) ||
+          !(path.contains(RegExp(r'#\d+'))) ||
+          !(path.contains('#')) ||
+          !(path.contains('##'))) {
         String priority;
         if (path.contains(settings.get(SettingsCards.pathSeparator))) {
-          priority = path.substring(0, path.indexOf(settings.get(SettingsCards.pathSeparator)));
+          priority = path.substring(
+              0, path.indexOf(settings.get(SettingsCards.pathSeparator)));
           var priorityDir = Directory(mainPriorityFse.path + priority);
           if (priorityDir.existsSync()) {
             _currentPriorityFse = Fse(
-                name: _changePathSeparator(priorityDir.path),
-                type: priorityDir.runtimeType.toString(),
-                path: _changePathSeparator(mainPriorityFse.path)
-                ,);
+              name: _changePathSeparator(priorityDir.path),
+              type: priorityDir.runtimeType.toString(),
+              path: _changePathSeparator(mainPriorityFse.path),
+            );
             // print(_currentPriorityFse ?? 'not been initialised');
             fsePriorityList.add(
               format(),
@@ -57,18 +60,20 @@ class FolderLinksRepository {
           } else {
             // debugPrint('Folder "${priorityDir.path}" not exists');
           }
-        } else if (!(path.contains(settings.get(SettingsCards.pathSeparator)))) {
+        } else if (!(path
+            .contains(settings.get(SettingsCards.pathSeparator)))) {
           priority = path;
           var priorityFile = File(mainPriorityFse.path + priority);
           if (priorityFile.existsSync()) {
             _currentPriorityFse = Fse(
-                name: _changePathSeparator(priorityFile.path),
-                type: priorityFile.runtimeType.toString(),
-                path: _changePathSeparator(mainPriorityFse.path),
-                );
+              name: _changePathSeparator(priorityFile.path),
+              type: priorityFile.runtimeType.toString(),
+              path: _changePathSeparator(mainPriorityFse.path),
+            );
             fsePriorityList.add(format());
           } else {
-            debugPrint('File "${_changePathSeparator(priorityFile.path)}" not Exists');
+            debugPrint(
+                'File "${_changePathSeparator(priorityFile.path)}" not Exists');
           }
         }
       }
@@ -97,13 +102,15 @@ class FolderLinksRepository {
   }
 
   String toParent({required String path}) {
-    return path.substring(
-        0, path.length - path.indexOf(settings.get(SettingsCards.pathSeparator)));
+    return path.substring(0,
+        path.length - path.indexOf(settings.get(SettingsCards.pathSeparator)));
   }
 
   format() {
     _currentPriorityFse.name = _currentPriorityFse.name.substring(
-        _currentPriorityFse.name.lastIndexOf(settings.get(SettingsCards.pathSeparator)) + 1);
+        _currentPriorityFse.name
+                .lastIndexOf(settings.get(SettingsCards.pathSeparator)) +
+            1);
     if (_currentPriorityFse.type == '_Directory') {
       _currentPriorityFse.name += settings.get(SettingsCards.pathSeparator);
     }

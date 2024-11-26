@@ -67,9 +67,11 @@ class LinksRepository {
       _toParentFolder();
       _toParentFolder();
     }
-    if (_name.startsWith(r'#\d' + settings.get(SettingsCards.pathSeparator))) {
-      var jumpNumber = _name.indexOf('d');
-      _name = _name.substring(2);
+    if (_name.startsWith(RegExp(r'#\d+\'+settings.get(SettingsCards.pathSeparator)))) {
+      var jumpNumber = int.parse(_name.substring(
+          1, _name.indexOf(settings.get(SettingsCards.pathSeparator))));
+      // debugPrint(jumpNumber);
+      // _name = _name.substring(2);
       for (var i = 0; i < jumpNumber; i++) {
         _toParentFolder();
       }
