@@ -15,6 +15,10 @@ sealed class FolderEvent extends Equatable {
 //   @override
 //   List<Object?> get props => [path];
 // }
+final class ChangePathEvent extends FolderEvent {
+  const ChangePathEvent({required this.path});
+  final String path;
+}
 
 final class PrimaryActionHappened extends FolderEvent {
   const PrimaryActionHappened({

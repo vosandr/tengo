@@ -23,6 +23,9 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     on<ReadingLinksHappened>((event, emit) {
       _onReadingLinksHappened(event, emit);
     });
+    on<ChangePathEvent>((event, emit) {
+      _onChangePathHappened(event, emit);
+    });
     // on<BooleanVarChanged>((event, emit) async {
     //   await _onBooleanVarChanged(event, emit);
     // });
@@ -68,9 +71,7 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
 
   _onReadingLinksHappened(
       ReadingLinksHappened event, Emitter<FolderState> emit) {
-    _clearDataInLinks(
-        event,
-        emit);
+    _clearDataInLinks(event, emit);
 
     emit(state.copyWith(
       status: () => FolderStatus.success,
@@ -91,6 +92,23 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
   //     // print(state);
   //   }
   // }
+  void _onChangePathHappened(ChangePathEvent event, Emitter<FolderState> emit) {
+    emit(state.copyWith(
+      fseList: () => const [],
+      status: () => FolderStatus.loading,
+      path: () => _folderRepository.toAbsoluteFolder(path: event.path),
+    ));
+    emit(state.copyWith(
+      status: () => FolderStatus.success,
+      path: () {
+        return state.path;
+      },
+      fseList: () =>
+          state.fseList +
+          _folderRepository.primaryAction(
+              action: PrimaryAction.read, path: state.path),
+    ));
+  }
 
   void _clearData(PrimaryActionHappened event, Emitter<FolderState> emit) {
     // print(state.path);
@@ -104,12 +122,13 @@ class FolderBloc extends Bloc<FolderEvent, FolderState> {
     // print(state.path);
   }
 
-  void _clearDataInLinks(ReadingLinksHappened event, Emitter<FolderState> emit) {
-        emit(state.copyWith(
+  void _clearDataInLinks(
+      ReadingLinksHappened event, Emitter<FolderState> emit) {
+    emit(state.copyWith(
       fseList: () => const [],
       status: () => FolderStatus.loading,
       path: () =>
-          _folderRepository.toAbsoluteFolder(path: event.path+ event.name),
+          _folderRepository.toAbsoluteFolder(path: event.path + event.name),
     ));
   }
   // Future<void> _doingAction(

@@ -91,10 +91,9 @@ class _FolderAppBarState extends State<FolderAppBar> {
           AppBar(
             title: TextField(
               scrollController: _pathScrollController,
-              // onSubmitted: (value) {
-              //   context.read<FolderBloc>().add(PrimaryActionHappened(
-              //       action: PrimaryAction.read, path: value));
-              // },
+              onSubmitted: (value) {
+                context.read<FolderBloc>().add(ChangePathEvent(path: value));
+              },
               // onSubmitted: (value) {},
               controller: _pathTextController..text = state.path,
             ),
