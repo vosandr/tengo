@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/file/highlight/md/link_text/links_repository.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo/features/models/fse.dart';
 import 'package:tengo/features/models/fse_action.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
 
@@ -39,7 +40,7 @@ class LinkText extends SpecialText {
   final TextStyle? style;
   final int? index;
   final BuildContext context;
-  final String path;
+  String path;
   String lastPath = '';
   // final TextSelection selection;
   String _getStringType({required String path}) {
@@ -62,13 +63,15 @@ class LinkText extends SpecialText {
     // debugPrint('$index $selection');
     bool isHover = false;
     String name = toString().substring(2, toString().length - 2);
-    // name =
-        // LinksRepository(path: path, link: name, context: context).normalise();
+    Fse fse =
+        LinksRepository(path: path, name: name, context: context).normalise();
+    // name = fse.name;
+    // path = fse.path;
     // debugPrint(selection.base.offset.toString());
     var type = _getStringType(path: name);
     TextStyle? style;
     if (type == '_File') {
-      if (File(path + name).existsSync()) {
+      if (File(fse.path + fse.name).existsSync()) {
         style = TextStyle(
             color: Colors.deepPurple[800],
             decoration: TextDecoration.underline);
@@ -78,7 +81,7 @@ class LinkText extends SpecialText {
             decoration: TextDecoration.underline);
       }
     } else if (type == '_Directory') {
-      if (Directory(path + name).existsSync()) {
+      if (Directory(fse.path + fse.name).existsSync()) {
         style = TextStyle(
             color: Colors.deepPurple[800],
             decoration: TextDecoration.underline);
@@ -98,6 +101,13 @@ class LinkText extends SpecialText {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 var type = _getStringType(path: name);
+
+                Fse fse =
+                    LinksRepository(path: path, name: name, context: context)
+                        .normalise();
+                name = fse.name;
+                path = fse.path;
+
                 if (type == '_File') {
                   if (File(path + name).existsSync()) {
                     context

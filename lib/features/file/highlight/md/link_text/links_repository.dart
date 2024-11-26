@@ -5,16 +5,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tengo/features/file/bloc/file_bloc.dart';
 import 'package:tengo/features/folder/bloc/folder_bloc.dart';
+import 'package:tengo/features/models/fse.dart';
 import 'package:tengo/features/settings/settings_cards.dart';
 
 class LinksRepository {
   LinksRepository({
     required String path,
-    required link,
+    required name,
     required this.context,
     // required this.selection,
   })  : _path = path,
-        _name = link;
+        _name = name;
   String _path;
   BuildContext context;
   // TextSelection selection;
@@ -39,69 +40,41 @@ class LinksRepository {
     throw 'Not the type from getTypeFromString';
   }
 
+  _toParentFolder() {
+    _path = _path.substring(
+        0,
+        _path
+                .substring(0, _path.length - 2)
+                .lastIndexOf(settings.get(SettingsCards.pathSeparator)) +
+            1);
+  }
+
   normalise() {
     if (_name.startsWith('.' + settings.get(SettingsCards.pathSeparator))) {
       _name = _name.substring(2);
     } else if (_name
         .startsWith('..' + settings.get(SettingsCards.pathSeparator))) {
       _name = _name.substring(3);
-      _path = _path.substring(
-          0,
-          _path.length -
-              1 -
-              _path.lastIndexOf(settings.get(SettingsCards.pathSeparator)));
+      _toParentFolder();
     }
     if (_name.startsWith('#' + settings.get(SettingsCards.pathSeparator))) {
-      _name = _name.substring(1);
-      _path = _path.substring(
-          0,
-          _path.length -
-              1 -
-              _path.lastIndexOf(settings.get(SettingsCards.pathSeparator)));
+      _name = _name.substring(2);
+      _toParentFolder();
+      // debugPrint(_path);
     }
     if (_name.startsWith('##' + settings.get(SettingsCards.pathSeparator))) {
-      _name = _name.substring(2);
-      _path = _path.substring(
-          0,
-          _path.length -
-              1 -
-              _path.lastIndexOf(settings.get(SettingsCards.pathSeparator)));
-      _path = _path.substring(
-          0,
-          _path.length -
-              1 -
-              _path.lastIndexOf(settings.get(SettingsCards.pathSeparator)));
+      _name = _name.substring(3);
+      _toParentFolder();
+      _toParentFolder();
     }
     if (_name.startsWith(r'#\d' + settings.get(SettingsCards.pathSeparator))) {
       var jumpNumber = _name.indexOf('d');
       _name = _name.substring(2);
       for (var i = 0; i < jumpNumber; i++) {
-        _path = _path.substring(
-            0,
-            _path.length -
-                1 -
-                _path.lastIndexOf(settings.get(SettingsCards.pathSeparator)));
+        _toParentFolder();
       }
     }
-    
-  }
-
-  onTapLink() {
-    normalise();
-    var type = _getStringType();
-    if (type == '_File') {
-      if (File(_path + _name).existsSync()) {
-        context.read<FileBloc>().add(ShowFile(name: _name, path: _path));
-      }
-    }
-    if (type == '_Directory') {
-      if (Directory(_path + _name).existsSync()) {
-        context.read<FolderBloc>().add(ReadingLinksHappened(
-              name: _name,
-              path: _path,
-            ));
-      }
-      debugPrint(_path + _name);
-    }
+    // debugPrint(_path);
+    return Fse(name: _name, type: _getStringType(), path: _path);
   }
 }
