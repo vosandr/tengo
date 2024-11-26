@@ -38,10 +38,6 @@ class FolderLinksRepository {
     for (final Match m in matches) {
       var path = m[0]!;
       // print(path);
-      if (!(path.contains('../')) ||
-          !(path.contains(RegExp(r'#\d+'))) ||
-          !(path.contains('#')) ||
-          !(path.contains('##'))) {
         String priority;
         if (path.contains(settings.get(SettingsCards.pathSeparator))) {
           priority = path.substring(
@@ -76,7 +72,7 @@ class FolderLinksRepository {
                 'File "${_changePathSeparator(priorityFile.path)}" not Exists');
           }
         }
-      }
+      
     }
 
     return fsePriorityList;

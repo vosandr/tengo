@@ -266,6 +266,51 @@ class _SettingsState extends State<Settings> {
                     ),
                   )
                 ]),
+                TableRow(children: [
+                  TableCell(
+                    child: Center(
+                      child: RichText(
+                        text: const TextSpan(children: [
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.folder,
+                            ),
+                          ),
+                          WidgetSpan(
+                            child: Icon(
+                              Icons.file_open,
+                            ),
+                          )
+                        ]),
+                      ),
+                    ),
+                  ),
+                  const TableCell(child: SizedBox.shrink()),
+                  TableCell(
+                      child: IconButton(
+                          onPressed: () {
+                            cardoteka.set(SettingsCards.pathSeparator,
+                                SettingsCards.pathSeparator.defaultValue);
+                            setState(() {});
+                          },
+                          icon: const Icon(Icons.refresh))),
+                  const TableCell(child: SizedBox.shrink()),
+                  TableCell(
+                    child: TextField(
+                      readOnly: true,
+                      // expands: true,
+                      maxLines: 1,
+                      minLines: null,
+                      controller: TextEditingController(
+                          text: cardoteka.get(SettingsCards.pathSeparator)),
+                      onSubmitted: (value) {
+                        cardoteka.set(SettingsCards.pathSeparator, value);
+                        // cardoteka.get(SettingsCards.priorityFseName);
+                        setState(() {});
+                      },
+                    ),
+                  )
+                ]),
               ]),
         ));
   }
